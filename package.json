@@ -1,0 +1,11 @@
+{
+  "name": "qrcode_hunt",
+  "version": "1.0.0",
+  "description": "qr code scavenger hunt game for uwi research day 2019",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Phillip Logan",
+  "license": "ISC"
+}
