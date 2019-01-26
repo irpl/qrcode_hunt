@@ -4,7 +4,7 @@
 
     <!-- <p class="decode-result">Last result: <b>{{ result }}</b></p> -->
 
-    <qrcode-stream @decode="onDecode" @init="onInit" :camera="{width: { min: 360, ideal: 1920, max: 1920 }, height: { min: 240, ideal: 1080, max: 1080 },}"/>
+    <qrcode-stream @decode="onDecode" @init="onInit" :camera="{facingMode: { ideal: 'environment' }, width: { min: 360, ideal: 1920, max: 1920 }, height: { min: 240, ideal: 1080, max: 1080 },}"/>
     <!-- <qrcode-capture v-if="NotSupportedError" @decode="onDecode" /> -->
   </div>
 </template>
