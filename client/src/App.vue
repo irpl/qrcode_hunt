@@ -1,25 +1,27 @@
 <template>
   <div id="app">
+    <Header />
+    <router-view/>
+  </div>
+</template>
+<!--<template>-->
+  <!-- <div id="app"> -->
     <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
     <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
     <!-- <Barcode /> -->
     <!-- <Main /> -->
-    <Quest />
-  </div>
-</template>
+    <!-- <Quest /> -->
+  <!-- </div> -->
+<!-- </template>-->
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
+// import Barcode from './components/Barcode.vue'
 // import Main from './components/Main.vue'
-import Quest from './components/Quest.vue'
+// import Quest from './components/Quest.vue'
 
 export default {
   name: 'app',
-  components: {
-    // Main,
-    // Barcode,
-    Quest
-  }
+  components: {}
 }
 </script>
 
@@ -30,7 +32,8 @@ body {
   background-color: #2a2826;
 }
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  /* font-family: 'Avenir', Helvetica, Arial, sans-serif; */
+  font-family: Raleway;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   
@@ -38,9 +41,57 @@ body {
   /* margin-top: 60px; */
 }
 
-h1 { font-family: Raleway; font-size: 36px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 26.4px; } 
+.btn {
+  color: inherit;
+  height: 72px;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
+  background-color: #2a2826;
+  padding: 0px;
+  font-family: Raleway;
+  font-weight: 700;
+  font-size: 20px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  border: none;
+  -o-transition: all 0.218s;
+  -moz-transition: all 0.218s;
+  -webkit-transition: all 0.218s;
+  transition: all 0.218s;
+}
+.btn-lg {
+  width: 100%;
+  display: block;
+  margin-bottom: 10px;
+  z-index: 1;
+  position: relative;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.back-btn {
+  position: absolute;
+  z-index: 1;
+}
+.btn-sm {
+  opacity: .7;
+  margin: 10px;
+  height: 41px;
+  width: 70px;
+}
+.btn:hover,
+.btn:active,
+.btn:focus {
+    background-color: #7c7671;
+    cursor: pointer;
+}
+
+/* h1 { font-family: Raleway; font-size: 36px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 26.4px; } 
 h3 { font-family: Raleway; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 15.4px; } 
 p { font-family: Raleway; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 20px; } 
 blockquote { font-family: Raleway; font-size: 21px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 30px; } 
-pre { font-family: Raleway; font-size: 13px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 18.5714px; }
+pre { font-family: Raleway; font-size: 13px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 18.5714px; } */
 </style>
