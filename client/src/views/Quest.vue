@@ -1,26 +1,40 @@
 <template>
-  <div class="todo">
-    <h1>Quests</h1>  
-    <ul class="instru"> <li>Read the clue. Find the secret code. Press the "Invetigate" button to read the code.</li></ul>
+<div>
+  <div v-if="toggle">
+    <Barcode v-on:toggle="onToggle" />
+  </div>
+  <div class="todo" v-else>
+    <div >
+      <h1>Quests</h1>  
+      <ul class="instru"> <li>To read the secret code, press the "Investigate" button.</li></ul>
 
-    <div class="quests">
-      <ol>
-        <li v-for="(quest, index) in quests" :key="index" class="quest" :class="{'is-completed': quest.completed}">{{quest.title}}</li>
-      </ol>
-      <div class="clue">
-        <span>Clue:</span>
-        <p>{{quests[0].clue}}</p>
+      <div class="quests">
+        <ol>
+          <li v-for="(quest, index) in quests" :key="index" class="quest" :class="{'is-completed': quest.completed}">{{quest.title}}</li>
+        </ol>
+        <div class="clue">
+          <span>Clue:</span>
+          <p>{{quests[0].clue}}</p>
+        </div>
+        <button class="inv btn btn-lg" type="button" v-on:click="onToggle">Investigate</button>
       </div>
-      <button class="inv btn btn-lg btn-primary btn-block btn-signin" type="button">Investigate</button>
     </div>
+    
+  </div>
   </div>
 </template>
 
 <script>
+import Barcode from '../components/Barcode.vue'
+
 export default {
-  name: "Quests",
+  components: {
+    Barcode
+  },
+  name: "Quest",
   data() {
     return {
+      toggle: false,
       quests: [
         {
           id: 1,
@@ -43,7 +57,12 @@ export default {
 
       ]
     }
-  }
+  },
+  methods: {
+    onToggle () {
+      this.toggle = !this.toggle;
+    }
+  },
 }
 </script>
 
@@ -79,34 +98,7 @@ export default {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
 }
-.btn {
-  color: inherit;
-  font-weight: 700;
-  height: 72px;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-  cursor: default;
-  background-color: #2a2826;
-  padding: 0px;
-  font-family: Raleway;
-  font-weight: 700;
-  font-size: 20px;
-  /* height: 36px; */
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  border: none;
-  -o-transition: all 0.218s;
-  -moz-transition: all 0.218s;
-  -webkit-transition: all 0.218s;
-  transition: all 0.218s;
-}
-.btn.btn-signin:hover,
-.btn.btn-signin:active,
-.btn.btn-signin:focus {
-    background-color: #7c7671;
-}
+
 
 .clue {
   margin: 50px 0;
