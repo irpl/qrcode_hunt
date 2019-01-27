@@ -1,27 +1,26 @@
 <template>
-  <div class="reader">
-    <!-- <p class="error">{{ error }}</p> -->
+  <div>
+    <p class="error">{{ error }}</p>
 
     <!-- <p class="decode-result">Last result: <b>{{ result }}</b></p> -->
-
-    <qrcode-stream @decode="onDecode" @init="onInit" :camera="{facingMode: { ideal: 'environment' }, width: { min: 360, ideal: 1920, max: 1920 }, height: { min: 240, ideal: 1080, max: 1080 },}"/>
-    <!-- <qrcode-capture v-if="NotSupportedError" @decode="onDecode" /> -->
+    <button class="btn btn-sm back-btn" v-on:click="toggle">Back</button>
+    <qrcode-stream @decode="onDecode" @init="onInit" :camera="{ facingMode: 'environment', height: { min: 240, ideal: 600, max: 1080 } }" />
   </div>
 </template>
 
 <script>
 export default {
-  // name: 'Barcode',
-  // props: {
-  //   msg: String
-  // },
   data () {
     return {
       result: '',
       error: ''
     }
   },
+
   methods: {
+    toggle () {
+      this.$emit('toggle');
+    },
     onDecode (result) {
       this.result = result
     },
@@ -49,25 +48,7 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-/* h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-} */
-/* .reader {
-  height: 100vh;
-} */
 .error {
   font-weight: bold;
   color: red;
