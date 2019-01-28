@@ -4,11 +4,11 @@
     <Barcode v-on:toggle="onToggle" />
   </div>
   <div class="todo" v-else>
-    <div >
+    <div>
       <h1>Quests</h1>  
       <ul class="instru"> <li>To read the secret code, press the "Investigate" button.</li></ul>
 
-      <div class="quests">
+      <div class="quests" v-if="quests[0]">
         <ol>
           <li v-for="(quest, index) in quests" :key="index" class="quest" :class="{'is-completed': quest.completed}">{{quest.title}}</li>
         </ol>
@@ -18,6 +18,9 @@
         </div>
         <button class="inv btn btn-lg" type="button" v-on:click="onToggle">Investigate</button>
       </div>
+      <div v-else>
+        <div class="no-game">{{game}}</div>
+      </div>
     </div>
     
   </div>
@@ -26,6 +29,7 @@
 
 <script>
 import Barcode from '../components/Barcode.vue'
+import axios from 'axios'
 
 export default {
   components: {
@@ -35,27 +39,8 @@ export default {
   data() {
     return {
       toggle: false,
-      quests: [
-        {
-          id: 1,
-          title: "boop",
-          clue: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tincidunt justo sed tortor placerat, eget semper risus molestie. Sed ac orci posuere augue pellentesque ultricies. Pellentesque luctus venenatis lorem sed vehicula.",
-          completed: true
-        },
-        {
-          id: 2,
-          title: "piddie",
-          clue: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tincidunt justo sed tortor placerat, eget semper risus molestie. Sed ac orci posuere augue pellentesque ultricies. Pellentesque luctus venenatis lorem sed vehicula.",
-          completed: true
-        },
-        {
-          id: 3,
-          title: "scoop",
-          clue: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tincidunt justo sed tortor placerat, eget semper risus molestie. Sed ac orci posuere augue pellentesque ultricies. Pellentesque luctus venenatis lorem sed vehicula.",
-          completed: false
-        },
-
-      ]
+      game: "loading...",
+      quests: []
     }
   },
   methods: {
@@ -63,11 +48,25 @@ export default {
       this.toggle = !this.toggle;
     }
   },
+  created() {
+    axios.get('/game?event=test')
+      .then(res => {
+        if (res.data.quests[0])
+          this.quests = res.data.quests;
+        else
+          this.game = "Looks like there aren't any games at the moment. 😔";
+      })
+      .catch(this.game = "#err")
+  }
 }
 </script>
 
 <style scoped>
-
+.no-game {
+  margin: 100px 50px;
+  text-align: center;
+  font-size: 24px;
+}
 .todo {
   margin: 10px auto;
   padding: 5px 20px;
