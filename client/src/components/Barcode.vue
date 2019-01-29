@@ -4,7 +4,7 @@
 
     <!-- <p class="decode-result">Last result: <b>{{ result }}</b></p> -->
     <button class="btn btn-sm back-btn" v-on:click="toggle">Back</button>
-    <qrcode-stream @decode="onDecode" @init="onInit" :camera="{ facingMode: 'environment', height: { min: 240, ideal: 1080, max: 1080 } }" />
+    <qrcode-stream @decode="onDecode" @init="onInit" :camera="{ facingMode: 'environment', height: { min: 240, ideal: 480, max: 1080 } }" />
   </div>
 </template>
 
