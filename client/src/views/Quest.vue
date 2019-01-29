@@ -1,7 +1,7 @@
 <template>
 <div>
   <div v-if="toggle">
-    <Barcode v-on:toggle="onToggle" />
+    <Barcode v-on:toggle="onToggle" @result="gotResult"/>
   </div>
   <div class="todo" v-else>
     <div>
@@ -40,12 +40,17 @@ export default {
     return {
       toggle: false,
       game: "loading...",
-      quests: []
+      quests: [],
+      state: 0
     }
   },
   methods: {
     onToggle () {
       this.toggle = !this.toggle;
+    },
+    gotResult (result) {
+      this.quests.map(quest => quest.completed = quest.message === result ? !quest.completed : quest.completed);
+      this.onToggle();
     }
   },
   created() {
