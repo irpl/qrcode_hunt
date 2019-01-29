@@ -21,7 +21,8 @@ require('./models/Game');
 
 // routes
 app.get('/', (req, res) => {
-  app.send("/client/dist/index.html");
+  // res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+  app.send(path.join(__dirname, 'client', 'dist', 'index.html'));
 });
 
 app.get('/game', (req, res) => {

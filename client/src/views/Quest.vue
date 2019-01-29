@@ -55,7 +55,11 @@ export default {
       }
     },
     gotResult (result) {
-      this.quests.map(quest => quest.completed = quest.message === result ? !quest.completed : quest.completed);
+      let completed = this.quests.map(quest => quest.completed = quest.message === result ? !quest.completed : quest.completed);
+      /*  
+        @TODO
+        try filter
+      */
       this.onToggle();
       this.checkGameState();
     }
