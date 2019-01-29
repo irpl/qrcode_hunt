@@ -25,7 +25,7 @@ const GameSchema = new Schema({
       },
       completed: {
         type: Boolean,
-        defaul: false
+        default: false
       }
     }
   ],
