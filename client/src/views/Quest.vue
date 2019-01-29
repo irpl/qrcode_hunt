@@ -14,7 +14,7 @@
         </ol>
         <div class="clue">
           <span>Clue:</span>
-          <p>{{quests[0].clue}}</p>
+          <p>{{quests[state].clue}}</p>
         </div>
         <button class="inv btn btn-lg" type="button" v-on:click="onToggle">Investigate</button>
       </div>
@@ -48,9 +48,16 @@ export default {
     onToggle () {
       this.toggle = !this.toggle;
     },
+    checkGameState () {
+      if (this.state++ == this.quests.length) {
+        alert("That's it! You are soooo Clutch! (hi, daaaeee! 😘😘😘)");
+        this.state--;
+      }
+    },
     gotResult (result) {
       this.quests.map(quest => quest.completed = quest.message === result ? !quest.completed : quest.completed);
       this.onToggle();
+      this.checkGameState();
     }
   },
   created() {

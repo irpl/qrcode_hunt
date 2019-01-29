@@ -25,9 +25,6 @@ export default {
       this.result = result;
       this.$emit('result', result);
     },
-    checkGameState () {
-
-    },
     async onInit (promise) {
       try {
         await promise
