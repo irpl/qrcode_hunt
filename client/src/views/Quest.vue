@@ -10,7 +10,9 @@
 
       <div class="quests" v-if="quests[0]">
         <ol>
-          <li v-for="(quest, index) in quests" :key="index" class="quest" :class="{'is-completed': quest.completed}">{{quest.title}}</li>
+          <li v-for="(quest, index) in quests" :key="index" class="quest" :class="{'is-completed': quest.completed}">
+            <span :class="{'not-yet': (!quest.completed && index !== state)}">{{quest.title}}</span>
+          </li>
         </ol>
         <div class="clue">
           <span>Clue:</span>
@@ -49,13 +51,23 @@ export default {
       this.toggle = !this.toggle;
     },
     checkGameState () {
-      if (this.state++ == this.quests.length) {
+      if (this.quests.filter(quest => !quest.completed).length === 0)
+      // if (this.state === this.quests.length) {
         alert("That's it! You are soooo Clutch! (hi, daaaeee! 😘😘😘)");
-        this.state--;
-      }
+      // }
     },
     gotResult (result) {
-      let completed = this.quests.map(quest => quest.completed = quest.message === result ? !quest.completed : quest.completed);
+      // this.quests.map(quest => quest.completed = (quest.message === result) ? true : quest.completed);
+      this.quests.map(quest => {
+        if( quest.message === result && !quest.completed && this.quests.indexOf(quest) === this.state ) {
+          quest.completed = true;
+
+          if (this.state < this.quests.length && this.state !== this.quests.length - 1)
+            this.state++;
+          // else
+          //   this.state--;
+        }
+      });
       /*  
         @TODO
         try filter
@@ -65,14 +77,14 @@ export default {
     }
   },
   created() {
-    axios.get('/game?event=test')
+    axios.get(`/game?event=${this.$route.query.event}`)
       .then(res => {
-        if (res.data.quests[0])
+        if (res.data)
           this.quests = res.data.quests;
         else
           this.game = "Looks like there aren't any games at the moment. 😔";
       })
-      .catch(this.game = "#err")
+      // .catch(this.game = "#err")
   }
 }
 </script>
@@ -94,6 +106,11 @@ export default {
 }
 .quest {
   padding: 10px 10px;
+}
+.not-yet {
+  opacity: .5;
+  color: #7c7671;
+  background-color: #7c7671;
 }
 .instru {
   padding-left: 10px;
