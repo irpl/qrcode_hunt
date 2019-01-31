@@ -53,7 +53,7 @@ export default {
     checkGameState () {
       if (this.quests.filter(quest => !quest.completed).length === 0)
       // if (this.state === this.quests.length) {
-        alert("That's it! You are soooo Clutch! (hi, daaaeee! 😘😘😘)");
+        alert("That's it! You are soooo Clutch!");
       // }
     },
     gotResult (result) {
