@@ -3,7 +3,7 @@
   <div v-if="toggle">
     <Barcode v-on:toggle="onToggle" @result="gotResult"/>
   </div>
-  <div class="todo" v-else>
+  <div class="container" v-else>
     <div>
       <h1>Quests</h1>  
       <ul class="instru"> <li>To read the secret code, press the "Investigate" button.</li></ul>
@@ -24,7 +24,6 @@
         <div class="no-game">{{game}}</div>
       </div>
     </div>
-    
   </div>
   </div>
 </template>
@@ -95,15 +94,7 @@ export default {
   text-align: center;
   font-size: 24px;
 }
-.todo {
-  margin: 10px auto;
-  padding: 5px 20px;
-  border-radius: 2px;
-  /* padding-bottom: 50px; */
-  background-color: #F7F7F722;  
-  max-width: 480px;
 
-}
 .quest {
   padding: 10px 10px;
 }

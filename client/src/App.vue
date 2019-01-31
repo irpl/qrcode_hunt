@@ -1,24 +1,10 @@
 <template>
   <div id="app">
-    <Header />
     <router-view/>
   </div>
 </template>
-<!--<template>-->
-  <!-- <div id="app"> -->
-    <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
-    <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
-    <!-- <Barcode /> -->
-    <!-- <Main /> -->
-    <!-- <Quest /> -->
-  <!-- </div> -->
-<!-- </template>-->
 
 <script>
-// import Barcode from './components/Barcode.vue'
-// import Main from './components/Main.vue'
-// import Quest from './components/Quest.vue'
-
 export default {
   name: 'app',
   components: {}
@@ -40,7 +26,15 @@ body {
   color: white;
   /* margin-top: 60px; */
 }
+.container {
+  margin: 10px auto;
+  padding: 5px 20px;
+  border-radius: 2px;
+  /* padding-bottom: 50px; */
+  background-color: #F7F7F722;  
+  max-width: 480px;
 
+}
 .btn {
   color: inherit;
   height: 72px;
