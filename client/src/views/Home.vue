@@ -1,31 +1,53 @@
 <template>
-  <!-- <div> -->
-  <!-- <div class="main"></div> -->
   <div class="main">
-        <div class="card card-container">
-          <h3>This is sooo</h3>
-          <h1>CLUTCH</h1>
-          <div class="logo"></div>
-            <form class="form-signin">
-                <router-link to="/quest" tag="button" class="btn btn-lg" type="submit">New game</router-link>
-                <router-link to="/quest" tag="button" class="btn btn-lg" type="submit">Continue</router-link>
-            </form> 
-        </div>
+    <div v-if="toggle">
+      <Barcode v-on:toggle="onToggle" @result="gotResult" />
     </div>
-    <!-- </div> -->
+    <div class="card card-container" v-else>
+      <h3>This is sooo</h3>
+      <h1>CLUTCH</h1>
+      <div class="logo"></div>
+        <!-- <router-link to="/quest" tag="button" class="btn btn-lg" type="submit">New game</router-link> -->
+      <router-link v-if="continu" to="/quest" tag="button" class="btn btn-lg" type="submit">Continue</router-link>
+      <button @click="onToggle" tag="button" class="btn btn-lg" type="submit">New game</button>
+    </div>
+    
+  </div>
 </template>
 
 <script>
+import Barcode from '../components/Barcode.vue'
 export default {
-  name: "Home"
+  components: {
+    Barcode
+  },
+  name: "Home",
+  data() {
+    return {
+      continu: false,
+      toggle: false,
+    }
+  },
+  methods: {
+    onToggle () {
+      this.toggle = !this.toggle;
+    },
+    gotResult (result) {
+      this.$router.push({ path: 'quest', query: { event: result } });
+    }
+  },
+  created () {
+    // if ( localStorage.getItem('game') === true ) {
+    //   this.continu = true;
+    // }
+  }
 }
 </script>
 
 <style scoped>
 
-.main {
-  text-align: center;
-}
+/* .main {
+} */
 
 .logo{
   height: 40px;
@@ -36,6 +58,8 @@ export default {
     padding: 40px 40px;
 }
 .card {
+  text-align: center;
+
     background-color: #F7F7F722;
     /* just in case there no content*/
     padding: 20px 25px 30px;

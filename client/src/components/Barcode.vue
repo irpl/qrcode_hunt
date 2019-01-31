@@ -3,8 +3,10 @@
     <p class="error">{{ error }}</p>
 
     <!-- <p class="decode-result">Last result: <b>{{ result }}</b></p> -->
-    <button class="btn btn-sm back-btn" v-on:click="toggle">Back</button>
-    <qrcode-stream @decode="onDecode" @init="onInit" :camera="{ facingMode: 'environment', height: { min: 240, ideal: 480, max: 1080 } }" />
+    
+    <qrcode-stream @decode="onDecode" @init="onInit" :camera="{ facingMode: 'environment', height: { min: 240, ideal: 480, max: 1080 } }" >
+      <button class="btn btn-sm back-btn" v-on:click="toggle">Back</button>
+    </qrcode-stream>
   </div>
 </template>
 
