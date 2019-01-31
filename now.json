@@ -1,13 +1,9 @@
 {
   "version": 2,
   "builds": [
-    { "src": "client/package.json", "use": "@now/static-build" },
-    { "src": "server.js", "use": "@now/node" }
+    { "src": "*.js", "use": "@now/node-server" }
   ],
   "routes":[
-    { "src": "^/game", "dest": "server.js" },
-    { "src": "^/favicon.ico", "dest": "/client/favicon.ico" },
-    { "src": "^/(css|js)/(.+)", "dest": "/client/$1/$2" },
-    { "src": "^/.*", "dest": "/client/index.html" }
+    { "src": "/(.*)", "dest": "server.js" }
   ]
 }
