@@ -9,6 +9,10 @@ const GameSchema = new Schema({
     type: String,
     required: true
   },
+  gameMaker: {
+    type: String,
+    required: true
+  },
   quests: [
     {
       title: {
@@ -16,10 +20,6 @@ const GameSchema = new Schema({
         required: true
       },
       clue: {
-        type: String,
-        required: true
-      },
-      message: {
         type: String,
         required: true
       },

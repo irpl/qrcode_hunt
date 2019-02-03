@@ -29,6 +29,7 @@ app.get('/game', (req, res) => {
 app.post('/game', (req, res) => {
   let newGame = new Game({
     event: req.body.event,
+    gameMaker: req.body.gameMaker,
     quests: req.body.quests
   });
 
