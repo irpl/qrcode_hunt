@@ -56,21 +56,14 @@ export default {
       // }
     },
     gotResult (result) {
-      // this.quests.map(quest => quest.completed = (quest.message === result) ? true : quest.completed);
       this.quests.map(quest => {
-        if( quest.message === result && !quest.completed && this.quests.indexOf(quest) === this.state ) {
+        if( quest._id === result && !quest.completed && this.quests.indexOf(quest) === this.state ) {
           quest.completed = true;
 
           if (this.state < this.quests.length && this.state !== this.quests.length - 1)
             this.state++;
-          // else
-          //   this.state--;
         }
       });
-      /*  
-        @TODO
-        try filter
-      */
       this.onToggle();
       this.checkGameState();
     }
