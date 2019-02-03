@@ -6,7 +6,7 @@
     <div class="card card-container" v-else>
       <h3>This is sooo</h3>
       <h1>CLUTCH</h1>
-      <div class="logo"></div>
+      <!-- <div class="logo"></div> -->
         <!-- <router-link to="/quest" tag="button" class="btn btn-lg" type="submit">New game</router-link> -->
       <router-link v-if="continu" to="/quest" tag="button" class="btn btn-lg" type="submit">Continue</router-link>
       <button @click="onToggle" tag="button" class="btn btn-lg" type="submit">New game</button>
@@ -46,8 +46,9 @@ export default {
 
 <style scoped>
 
-/* .main {
-} */
+h1 {
+  font-size: 3em;
+}
 
 .logo{
   height: 40px;
