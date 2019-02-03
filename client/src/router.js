@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Quest from './views/Quest.vue'
 import Make from './views/Make.vue'
+import About from './views/About.vue'
 
 Vue.use(Router)
 
@@ -22,6 +23,11 @@ export default new Router({
       path: '/make',
       name: 'make',
       component: Make
+    },
+    {
+      path: '/about',
+      name: 'about',
+      component: About
     }
   ]
 })
