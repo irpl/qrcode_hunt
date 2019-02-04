@@ -16,10 +16,15 @@
           <li>Rochelle Walters</li>
         </ul>
       </li>
+      <li class="aboot-li">Bug fixes
+        <ul>
+          <li>Paulo De Mitri</li>
+        </ul>
+      </li>
       <li class="aboot-li">Artistic Design and Testing
         <ul><li>Daena Sang</li></ul>
       </li>
-      <li class="aboot-li">Programming
+      <li class="aboot-li">Development
         <ul><li>Phillip Logan</li></ul>
       </li>
     </ul>
