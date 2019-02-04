@@ -34,9 +34,9 @@ app.post('/game', (req, res) => {
   });
 
   newGame
-    .save((err) => {
+    .save((err, g) => {
       if (err) res.json({success: false});
-      else res.json({success: true});
+      else res.json({success: g});
     })
 });
 

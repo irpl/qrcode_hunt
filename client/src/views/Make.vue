@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Made v-if="success" v-bind:game="$data"/>
+    <Made v-if="success" v-bind:game="success"/>
     <div class="container" v-else>
       <h1>Create your own game</h1>
       <!-- <form> -->
@@ -36,6 +36,7 @@ export default {
   components: {
     Made
   },
+  name: "Make",
   data () {
     return {
       quests: [],
@@ -60,8 +61,8 @@ export default {
     submit () {
       axios.post('/game', this.$data)
         .then(res => {
-          if (res.data) {
-            this.success = res.data.success
+          if (res.data.success) {
+            this.success = res.data.success;
           } else {
             alert("There was an error")
           }
