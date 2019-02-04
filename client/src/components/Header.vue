@@ -17,10 +17,12 @@ export default {
 
 <style scoped>
   .header {
-    background: #333;
+    background-color: #F7F7F722;
     color: #fff;
     /* text-align: center; */
     padding: 10px;
+    /* margin: 0 5.5px; */
+    border-radius: 2px;
   }
   .header a {
     color: #ccc;
