@@ -60,8 +60,10 @@ export default {
         if( quest._id === result && !quest.completed && this.quests.indexOf(quest) === this.state ) {
           quest.completed = true;
 
-          if (this.state < this.quests.length && this.state !== this.quests.length - 1)
+          if (this.state < this.quests.length && this.state !== this.quests.length - 1) {
             this.state++;
+            localStorage.setItem('state', this.state);
+          }
         }
       });
       this.onToggle();
@@ -71,10 +73,16 @@ export default {
   created() {
     axios.get(`/game?event=${this.$route.query.event}`)
       .then(res => {
-        if (res.data)
+        if (res.data) {
           this.quests = res.data.quests;
-        else
+          localStorage.setItem('game', '1');
+          localStorage.setItem('gameName', this.$route.query.event);
+        }
+        else {
           this.game = "Looks like there aren't any games at the moment. 😔";
+          localStorage.setItem('game', '0');
+          localStorage.setItem('gameName', '');
+        }
       })
       // .catch(this.game = "#err")
   }
