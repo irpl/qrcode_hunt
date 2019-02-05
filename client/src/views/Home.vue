@@ -9,7 +9,7 @@
       <!-- <div class="logo"></div> -->
         <!-- <router-link to="/quest" tag="button" class="btn btn-lg" type="submit">New game</router-link> -->
       <button @click="ifContinu" v-if="continu" class="btn btn-lg">Continue</button>
-      <button @click="onToggle" class="btn btn-lg">New game</button>
+      <button @click="ifNu" class="btn btn-lg">New game</button>
     </div>
     
   </div>
@@ -34,6 +34,10 @@ export default {
     },
     gotResult (result) {
       this.$router.push({ path: 'quest', query: { event: result } });
+    },
+    ifNu () {
+      localStorage.setItem('state', '0');
+      this.onToggle ();
     },
     ifContinu () {
       let gameName = localStorage.getItem('gameName');

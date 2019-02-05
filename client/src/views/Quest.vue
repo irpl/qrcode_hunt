@@ -43,6 +43,7 @@ export default {
       game: "loading...",
       quests: [],
       state: 0
+      // state: this.quests.filter(q => q.completed).length-1
     }
   },
   methods: {
@@ -52,6 +53,9 @@ export default {
     checkGameState () {
       if (this.quests.filter(quest => !quest.completed).length === 0)
       // if (this.state === this.quests.length) {
+        localStorage.removeItem('game');
+        localStorage.removeItem('gameName');
+        localStorage.removeItem('state');
         alert("That's it! You are soooo Clutch!");
       // }
     },
@@ -77,6 +81,15 @@ export default {
           this.quests = res.data.quests;
           localStorage.setItem('game', '1');
           localStorage.setItem('gameName', this.$route.query.event);
+
+          let progress = localStorage.getItem('state');
+          if ( progress ) {
+            progress = parseInt(progress);
+            for ( let i=0; i<progress; i++ ) {
+              this.quests[i].completed = true;
+            }
+            this.state = progress;
+          }
         }
         else {
           this.game = "Looks like there aren't any games at the moment. 😔";
