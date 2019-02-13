@@ -116,6 +116,11 @@ export default {
   opacity: .5;
   color: #7c7671;
   background-color: #7c7671;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+  user-select: none; /* Don't let user highlight text */
 }
 .instru {
   padding-left: 10px;
