@@ -41,7 +41,7 @@ app.post('/game', (req, res) => {
 });
 
 if (!process.env.NOW_REGION) {
-  const PORT = process.env.PORT || 5000;
+  const PORT = process.env.PORT || 3050;
   app.listen(PORT, () => console.log(`Running on port ${PORT}`));
 }
 
