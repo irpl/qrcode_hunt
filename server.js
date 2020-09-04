@@ -5,12 +5,12 @@ const path = require("path");
 
 const app = express();
 app.use(bodyParser.json());
-
-var url = "mongodb://clutch:clutch123@cluster0-shard-00-00-z8dcu.mongodb.net:27017,cluster0-shard-00-01-z8dcu.mongodb.net:27017,cluster0-shard-00-02-z8dcu.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true";
+require('dotenv').config()
+var url = process.env.CLUTCH_DB_STRING;
 
 // connect to databse
 mongoose
-  .connect(url, { useNewUrlParser: true })
+  .connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
   .then( () => console.log('MongoDB connected') )
   .catch( err => console.log(err) )
 
@@ -41,7 +41,7 @@ app.post('/game', (req, res) => {
 });
 
 if (!process.env.NOW_REGION) {
-  const PORT = process.env.PORT || 3050;
+  const PORT = process.env.CLUTCH_PORT || 3060;
   app.listen(PORT, () => console.log(`Running on port ${PORT}`));
 }
 
