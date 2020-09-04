@@ -40,7 +40,7 @@ hr {
 }
 .container {
   margin: 10px auto;
-  padding: 5px 20px;
+  padding: 24px 44px;
   border-radius: 2px;
   /* padding-bottom: 50px; */
   background-color: #F7F7F722;  
