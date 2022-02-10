@@ -19,19 +19,19 @@ mongoose
 require("./models/Game");
 
 // routes
-app.get("/game", (req, res) => {
+app.get("/api/game", (req, res) => {
   Game.findOne({ event: req.query.event })
     .then((g) => res.json(g))
     .catch((err) => console.log(err));
 });
 
-app.get("/games", (req, res) => {
+app.get("/api/games", (req, res) => {
   Game.find()
     .then((g) => res.json(g))
     .catch((err) => console.log(err));
 });
 
-app.post("/game", (req, res) => {
+app.post("/api/game", (req, res) => {
   let newGame = new Game({
     event: req.body.event,
     gameMaker: req.body.gameMaker,
