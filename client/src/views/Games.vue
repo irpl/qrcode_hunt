@@ -58,9 +58,9 @@ export default {
 
 <style scoped>
 .back-btn-made {
-  position: fixed;
-  right: 40px;
-  top: 70px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
 }
 .game-list {
   width: 100%;

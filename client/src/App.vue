@@ -39,6 +39,7 @@ hr {
   /* margin-top: 60px; */
 }
 .container {
+  position: relative;
   margin: 10px auto;
   padding: 24px 44px;
   border-radius: 2px;
