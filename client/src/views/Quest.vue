@@ -5,6 +5,15 @@
     </div>
     <div class="container" v-else>
       <div>
+        <div v-if="openModal" class="modal-win">
+          <div class="modal-win-content">
+            <div class="modal-win-tick">✔</div>
+            <div>That's it! You are soooo Clutch!</div>
+            <div>
+              <button class="modal-btn btn btn-lg" @click="toggleModal">Cool</button>
+            </div>
+          </div>
+        </div>
         <h1>Quest list</h1>
         <div class="quests" v-if="quests[0]">
           <ol>
@@ -45,21 +54,26 @@ export default {
       game: "loading...",
       quests: [],
       state: 0,
+      openModal: false,
       // state: this.quests.filter(q => q.completed).length-1
     };
   },
   methods: {
+    toggleModal() {
+      this.openModal = !this.openModal;
+    },
     onToggle() {
       this.toggle = !this.toggle;
     },
-    checkGameState() {
-      if (this.quests.filter((quest) => !quest.completed).length === 0)
-        if (this.state === this.quests.length) {
-          localStorage.removeItem("game");
-          localStorage.removeItem("gameName");
-          localStorage.removeItem("state");
-          alert("That's it! You are soooo Clutch!");
-        }
+    async checkGameState() {
+      if (this.quests.filter((quest) => !quest.completed).length === 0) {
+        // if (this.state === this.quests.length) {
+        localStorage.removeItem("game");
+        localStorage.removeItem("gameName");
+        localStorage.removeItem("state");
+        this.toggleModal();
+        // await alert("That's it! You are soooo Clutch!");
+      }
     },
     gotResult(result) {
       this.quests.map((quest) => {
@@ -103,6 +117,38 @@ export default {
 </script>
 
 <style scoped>
+.modal-win {
+  position: fixed; /* Stay in place */
+  z-index: 9; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+.modal-win-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #2a2826;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 8px solid #7c7671;
+  border-radius: 2px;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+.modal-win-tick {
+  color: #0f0;
+  font-size: 6rem;
+}
+.modal-btn {
+  width: 100px;
+  height: 50px;
+  margin-top: 20px;
+  background-color: #7c7671;
+}
 .no-game {
   margin: 100px 50px;
   text-align: center;

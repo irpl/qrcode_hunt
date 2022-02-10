@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div v-if="success">
-      <button class="btn btn-sm back-btn" v-on:click="back">Back</button>
+      <button class="btn btn-sm back-btn back-btn-made" v-on:click="back">Back</button>
       <Made v-bind:game="success" />
     </div>
     <div v-else>
@@ -57,6 +57,11 @@ export default {
 </script>
 
 <style scoped>
+.back-btn-made {
+  position: fixed;
+  right: 40px;
+  top: 70px;
+}
 .game-list {
   width: 100%;
   display: flex;
