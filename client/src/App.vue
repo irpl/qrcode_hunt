@@ -1,18 +1,18 @@
 <template>
   <div id="app">
     <Header />
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
 <script>
-import Header from './components/Header';
+import Header from "./components/Header";
 export default {
-  name: 'app',
+  name: "app",
   components: {
-    Header
-  }
-}
+    Header,
+  },
+};
 </script>
 
 <style>
@@ -25,16 +25,16 @@ hr {
   display: block;
   height: 1px;
   border: 0;
-  border-top: 1px solid #F7F7F722;
+  border-top: 1px solid #f7f7f722;
   margin: 1em 0;
-  padding: 0; 
+  padding: 0;
 }
 #app {
   /* font-family: 'Avenir', Helvetica, Arial, sans-serif; */
   font-family: Raleway;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
+
   color: white;
   /* margin-top: 60px; */
 }
@@ -43,9 +43,8 @@ hr {
   padding: 24px 44px;
   border-radius: 2px;
   /* padding-bottom: 50px; */
-  background-color: #F7F7F722;  
+  background-color: #f7f7f722;
   max-width: 480px;
-
 }
 .btn {
   color: inherit;
@@ -83,7 +82,7 @@ hr {
   z-index: 1;
 }
 .btn-sm {
-  opacity: .7;
+  opacity: 0.7;
   margin: 10px;
   height: 41px;
   width: 70px;
@@ -91,8 +90,8 @@ hr {
 .btn:hover,
 .btn:active,
 .btn:focus {
-    background-color: #7c7671;
-    cursor: pointer;
+  background-color: #7c7671;
+  cursor: pointer;
 }
 
 /* h1 { font-family: Raleway; font-size: 36px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 26.4px; } 

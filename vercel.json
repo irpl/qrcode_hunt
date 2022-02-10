@@ -6,7 +6,7 @@
     { "src": "api/index.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "^/game", "dest": "api/index.js" },
+    { "src": "^/api/game[s]?", "dest": "api/index.js" },
     { "src": "^/favicon.ico", "dest": "/client/favicon.ico" },
     { "src": "^/(css|js)/(.+)", "dest": "/client/$1/$2" },
     { "src": "^/.*", "dest": "/client/index.html" }

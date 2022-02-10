@@ -25,6 +25,12 @@ app.get("/game", (req, res) => {
     .catch((err) => console.log(err));
 });
 
+app.get("/games", (req, res) => {
+  Game.find()
+    .then((g) => res.json(g))
+    .catch((err) => console.log(err));
+});
+
 app.post("/game", (req, res) => {
   let newGame = new Game({
     event: req.body.event,
@@ -39,7 +45,7 @@ app.post("/game", (req, res) => {
 });
 
 if (process.env.ENVIRONMENT == "dev") {
-  const PORT = process.env.CLUTCH_PORT || 3060;
+  const PORT = process.env.CLUTCH_PORT || 5000;
   app.listen(PORT, () => console.log(`Running on port ${PORT}`));
 }
 

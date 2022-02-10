@@ -1,40 +1,42 @@
 <template>
-<div>
-  <div v-if="toggle">
-    <Barcode v-on:toggle="onToggle" @result="gotResult"/>
-  </div>
-  <div class="container" v-else>
-    <div>
-      <h1>Quests</h1>  
-      <ul class="instru"> <li>To read the secret code, press the "Investigate" button.</li></ul>
-
-      <div class="quests" v-if="quests[0]">
-        <ol>
-          <li v-for="(quest, index) in quests" :key="index" class="quest" :class="{'is-completed': quest.completed}">
-            <span :class="{'not-yet': (!quest.completed && index !== state)}">{{quest.title}}</span>
-          </li>
-        </ol>
-        <div class="clue">
-          <span>Clue:</span>
-          <p>{{quests[state].clue}}</p>
+  <div>
+    <div v-if="toggle">
+      <Barcode v-on:toggle="onToggle" @result="gotResult" />
+    </div>
+    <div class="container" v-else>
+      <div>
+        <h1>Quest list</h1>
+        <div class="quests" v-if="quests[0]">
+          <ol>
+            <li v-for="(quest, index) in quests" :key="index" class="quest">
+              <span :class="{ 'not-yet': !quest.completed && index !== state, 'is-completed': quest.completed }">{{ quest.title }}</span>
+              <span :class="{ 'is-completed-marker': quest.completed }"></span>
+            </li>
+          </ol>
+          <div class="clue">
+            <h1>Clue:</h1>
+            <p>"{{ quests[state].clue }}"</p>
+          </div>
+          <button class="inv btn btn-lg" type="button" v-on:click="onToggle">Investigate</button>
+          <div class="instru">
+            <span>To scan the secret qr-code, tap the "Investigate" button.</span>
+          </div>
         </div>
-        <button class="inv btn btn-lg" type="button" v-on:click="onToggle">Investigate</button>
-      </div>
-      <div v-else>
-        <div class="no-game">{{game}}</div>
+        <div v-else>
+          <div class="no-game">{{ game }}</div>
+        </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 
 <script>
-import Barcode from '../components/Barcode.vue'
-import axios from 'axios'
+import Barcode from "../components/Barcode.vue";
+import axios from "axios";
 
 export default {
   components: {
-    Barcode
+    Barcode,
   },
   name: "Quest",
   data() {
@@ -42,64 +44,62 @@ export default {
       toggle: false,
       game: "loading...",
       quests: [],
-      state: 0
+      state: 0,
       // state: this.quests.filter(q => q.completed).length-1
-    }
+    };
   },
   methods: {
-    onToggle () {
+    onToggle() {
       this.toggle = !this.toggle;
     },
-    checkGameState () {
-      if (this.quests.filter(quest => !quest.completed).length === 0)
-      // if (this.state === this.quests.length) {
-        localStorage.removeItem('game');
-        localStorage.removeItem('gameName');
-        localStorage.removeItem('state');
-        alert("That's it! You are soooo Clutch!");
-      // }
+    checkGameState() {
+      if (this.quests.filter((quest) => !quest.completed).length === 0)
+        if (this.state === this.quests.length) {
+          localStorage.removeItem("game");
+          localStorage.removeItem("gameName");
+          localStorage.removeItem("state");
+          alert("That's it! You are soooo Clutch!");
+        }
     },
-    gotResult (result) {
-      this.quests.map(quest => {
-        if( quest._id === result && !quest.completed && this.quests.indexOf(quest) === this.state ) {
+    gotResult(result) {
+      this.quests.map((quest) => {
+        if (quest._id === result && !quest.completed && this.quests.indexOf(quest) === this.state) {
           quest.completed = true;
 
           if (this.state < this.quests.length && this.state !== this.quests.length - 1) {
             this.state++;
-            localStorage.setItem('state', this.state);
+            localStorage.setItem("state", this.state);
           }
         }
       });
       this.onToggle();
       this.checkGameState();
-    }
+    },
   },
   created() {
-    axios.get(`/game?event=${this.$route.query.event}`)
-      .then(res => {
-        if (res.data) {
-          this.quests = res.data.quests;
-          localStorage.setItem('game', '1');
-          localStorage.setItem('gameName', this.$route.query.event);
+    axios.get(`/api/game?event=${this.$route.query.event}`).then((res) => {
+      if (res.data) {
+        this.quests = res.data.quests;
+        localStorage.setItem("game", "1");
+        localStorage.setItem("gameName", this.$route.query.event);
 
-          let progress = localStorage.getItem('state');
-          if ( progress ) {
-            progress = parseInt(progress);
-            for ( let i=0; i<progress; i++ ) {
-              this.quests[i].completed = true;
-            }
-            this.state = progress;
+        let progress = localStorage.getItem("state");
+        if (progress) {
+          progress = parseInt(progress);
+          for (let i = 0; i < progress; i++) {
+            this.quests[i].completed = true;
           }
+          this.state = progress;
         }
-        else {
-          this.game = "Looks like there aren't any games at the moment. 😔";
-          localStorage.setItem('game', '0');
-          localStorage.setItem('gameName', '');
-        }
-      })
-      // .catch(this.game = "#err")
-  }
-}
+      } else {
+        this.game = "Looks like there aren't any games at the moment. 😔";
+        localStorage.setItem("game", "0");
+        localStorage.setItem("gameName", "");
+      }
+    });
+    // .catch(this.game = "#err")
+  },
+};
 </script>
 
 <style scoped>
@@ -113,7 +113,7 @@ export default {
   padding: 10px 10px;
 }
 .not-yet {
-  opacity: .5;
+  opacity: 0.5;
   color: #7c7671;
   background-color: #7c7671;
   -moz-user-select: -moz-none;
@@ -123,32 +123,36 @@ export default {
   user-select: none; /* Don't let user highlight text */
 }
 .instru {
-  padding-left: 10px;
-  opacity: .4;
+  padding: 10px 0;
+  opacity: 0.4;
+  display: flex;
+  justify-content: center;
 }
-.is-completed::after {
-  content: " ✔";
+.is-completed {
+  text-decoration: line-through;
+}
+.is-completed-marker::after {
+  content: " [COMPLETED] ✔";
   color: rgb(0, 255, 0);
 }
 .quests button {
-    width: 100%;
-    display: block;
-    margin-bottom: 10px;
-    z-index: 1;
-    position: relative;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
+  width: 100%;
+  display: block;
+  margin-bottom: 10px;
+  z-index: 1;
+  position: relative;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
 }
-
 
 .clue {
   margin: 50px 0;
 }
 
 /* .inv { */
-  /* position: absolute; */
-  
-  /* bottom: 15px; */
+/* position: absolute; */
+
+/* bottom: 15px; */
 /* } */
 </style>
