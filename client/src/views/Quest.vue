@@ -14,6 +14,14 @@
             </div>
           </div>
         </div>
+        <vue-countdown class="quest-countdown" :time="timeLeft">
+          <template slot-scope="props">
+            Time Remaining:
+            {{ String(props.days).padStart(2, "0") }}:{{ String(props.hours).padStart(2, "0") }}:{{ String(props.minutes).padStart(2, "0") }}:{{
+              String(props.seconds).padStart(2, "0")
+            }}
+          </template>
+        </vue-countdown>
         <h1>Quest list</h1>
         <div class="quests" v-if="quests[0]">
           <ol>
@@ -42,10 +50,13 @@
 <script>
 import Barcode from "../components/Barcode.vue";
 import axios from "axios";
+import parse from "parse-duration";
+import VueCountdown from "@chenfengyuan/vue-countdown";
 
 export default {
   components: {
     Barcode,
+    VueCountdown,
   },
   name: "Quest",
   data() {
@@ -54,6 +65,7 @@ export default {
       game: "loading...",
       quests: [],
       state: 0,
+      timeLeft: 0,
       openModal: false,
       // state: this.quests.filter(q => q.completed).length-1
     };
@@ -96,6 +108,15 @@ export default {
         this.quests = res.data.quests;
         localStorage.setItem("game", "1");
         localStorage.setItem("gameName", this.$route.query.event);
+
+        var startTime = parseInt(localStorage.getItem("startTime"));
+        var endTime = parseInt(localStorage.getItem("endTime"));
+        if (!endTime) {
+          endTime = startTime + parse(res.data.duration);
+          localStorage.setItem("endTime", endTime);
+        }
+
+        this.timeLeft = endTime - Date.now();
 
         let progress = localStorage.getItem("state");
         if (progress) {
@@ -157,6 +178,9 @@ export default {
 
 .quest {
   padding: 10px 10px;
+}
+
+.quest-countdown {
 }
 .not-yet {
   opacity: 0.5;

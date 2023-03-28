@@ -12,6 +12,7 @@
           <div class="game-list-card-event">{{ game.event }}</div>
           <div>{{ game.gameMaker }}</div>
           <div>{{ dateFilter(game.dateCreated) }}</div>
+          <div>{{ game.duration }}</div>
           <!-- </div> -->
         </div>
       </div>
@@ -20,6 +21,7 @@
 </template>
 <script>
 import axios from "axios";
+import parse from "parse-duration";
 import Made from "../components/Made.vue";
 export default {
   components: {

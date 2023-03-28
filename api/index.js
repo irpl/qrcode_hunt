@@ -3,9 +3,11 @@ const mongoose = require("mongoose");
 const path = require("path");
 const cors = require("cors");
 const app = express();
+const morgan = require("morgan");
 
 app.use(cors());
 app.use(express.json());
+app.use(morgan("combined"));
 require("dotenv").config();
 var url = process.env.CLUTCH_DB_STRING;
 
@@ -36,6 +38,7 @@ app.post("/api/game", (req, res) => {
     event: req.body.event,
     gameMaker: req.body.gameMaker,
     quests: req.body.quests,
+    duration: req.body.gameDuration,
   });
 
   newGame.save((err, g) => {

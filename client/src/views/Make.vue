@@ -11,6 +11,9 @@
       <div class="make-input-div">
         <input class="make-input" type="text" v-model="gameMaker" placeholder="Your name" />
       </div>
+      <div class="make-input-div">
+        <input class="make-input" type="text" v-model="gameDuration" placeholder="Game duration eg: 1.5h, 30m" />
+      </div>
       <hr />
       <h2>Quests</h2>
       <div v-for="(quests, index) in quests" :key="index">
@@ -19,6 +22,9 @@
         </div>
         <div class="make-input-div">
           <textarea class="make-input" v-model="quests.clue" placeholder="Clue" />
+        </div>
+        <div class="make-input-div">
+          <textarea class="make-input" v-model="quests.hint" placeholder="Hint (optional)" />
         </div>
         <button class="btn btn-sm del" @click="deleteRow(index)">- del</button>
       </div>
@@ -42,6 +48,7 @@ export default {
       quests: [],
       gameMaker: "",
       event: "",
+      gameDuration: "",
       success: false,
     };
   },

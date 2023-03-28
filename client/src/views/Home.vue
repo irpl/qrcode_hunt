@@ -7,68 +7,67 @@
       <h3>This is sooo</h3>
       <h1>CLUTCH</h1>
       <!-- <div class="logo"></div> -->
-        <!-- <router-link to="/quest" tag="button" class="btn btn-lg" type="submit">New game</router-link> -->
+      <!-- <router-link to="/quest" tag="button" class="btn btn-lg" type="submit">New game</router-link> -->
       <button @click="ifContinu" v-if="continu" class="btn btn-lg">Continue</button>
       <button @click="ifNu" class="btn btn-lg">New game</button>
     </div>
-    
   </div>
 </template>
 
 <script>
-import Barcode from '../components/Barcode.vue'
+import Barcode from "../components/Barcode.vue";
 export default {
   components: {
-    Barcode
+    Barcode,
   },
   name: "Home",
   data() {
     return {
       continu: false,
       toggle: false,
-    }
+    };
   },
   methods: {
-    onToggle () {
+    onToggle() {
       this.toggle = !this.toggle;
     },
-    gotResult (result) {
-      this.$router.push({ path: 'quest', query: { event: result } });
+    gotResult(result) {
+      localStorage.setItem("startTime", Date.now());
+      this.$router.push({ path: "quest", query: { event: result } });
     },
-    ifNu () {
-      localStorage.setItem('state', '0');
-      this.onToggle ();
+    ifNu() {
+      localStorage.setItem("state", "0");
+      this.onToggle();
     },
-    ifContinu () {
-      let gameName = localStorage.getItem('gameName');
-      this.$router.push({ path: 'quest', query: { event: gameName } });
-    }
+    ifContinu() {
+      let gameName = localStorage.getItem("gameName");
+      this.$router.push({ path: "quest", query: { event: gameName } });
+    },
   },
-  created () {
-    if ( localStorage.getItem('game') === '1') {
+  created() {
+    if (localStorage.getItem("game") === "1") {
       this.continu = true;
     }
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
-
 h1 {
   font-size: 3em;
 }
 
-.logo{
+.logo {
   height: 40px;
 }
 
 .card-container.card {
-    max-width: 300px;
-    padding: 40px 40px;
+  max-width: 300px;
+  padding: 40px 40px;
 }
 .card {
   text-align: center;
-  background-color: #F7F7F722;
+  background-color: #f7f7f722;
   /* just in case there no content*/
   padding: 20px 25px 30px;
   margin: 0 auto 25px;
