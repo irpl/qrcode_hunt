@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div v-if="toggle">
-      <Barcode v-on:toggle="onToggle" @result="gotResult" />
+      <barcode-item v-on:toggle="onToggle" @result="gotResult" />
     </div>
     <div class="card card-container" v-else>
       <h3>This is sooo</h3>
@@ -15,12 +15,12 @@
 </template>
 
 <script>
-import Barcode from "../components/Barcode.vue";
+import BarcodeItem from "../components/BarcodeItem.vue";
 export default {
   components: {
-    Barcode,
+    BarcodeItem,
   },
-  name: "Home",
+  name: "HomeView",
   data() {
     return {
       continu: false,
@@ -36,6 +36,7 @@ export default {
       this.$router.push({ path: "quest", query: { event: result } });
     },
     ifNu() {
+      localStorage.clear();
       localStorage.setItem("state", "0");
       this.onToggle();
     },

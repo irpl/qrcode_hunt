@@ -18,7 +18,7 @@
 
 <script>
 export default {
-  name: "Made",
+  name: "MadeItem",
   props: ["game"],
 };
 </script>

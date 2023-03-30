@@ -2,7 +2,7 @@
   <div class="container">
     <div v-if="success">
       <button class="btn btn-sm back-btn back-btn-made" v-on:click="back">Back</button>
-      <Made v-bind:game="success" />
+      <made-item v-bind:game="success" />
     </div>
     <div v-else>
       <h1>Game List</h1>
@@ -21,13 +21,13 @@
 </template>
 <script>
 import axios from "axios";
-import parse from "parse-duration";
-import Made from "../components/Made.vue";
+// import parse from "parse-duration";
+import MadeItem from "../components/MadeItem.vue";
 export default {
   components: {
-    Made,
+    MadeItem,
   },
-  name: "Games",
+  name: "GamesView",
   data() {
     return {
       games: [],
