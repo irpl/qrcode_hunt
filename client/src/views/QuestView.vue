@@ -86,6 +86,14 @@ export default {
       // state: this.quests.filter(q => q.completed).length-1
     };
   },
+  watch: {
+    toggle(newValue) {
+      if (!newValue) {
+        var endTime = parseInt(localStorage.getItem("endTime"));
+        this.timeLeft = endTime - Date.now() > 0 ? endTime - Date.now() : 0;
+      }
+    },
+  },
   methods: {
     sortQuests(quests) {
       function func(_a, _b) {
