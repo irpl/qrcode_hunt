@@ -6,7 +6,7 @@
     <div class="container" v-else>
       <div>
         <div class="quest-top">
-          <vue-countdown ref="countdown" tag="div" class="quest-countdown" :time="timeLeft" v-slot="{ hours, minutes, seconds }">
+          <vue-countdown @end="onCountdownEnd" ref="countdown" tag="div" class="quest-countdown" :time="timeLeft" v-slot="{ hours, minutes, seconds }">
             {{ String(hours).padStart(2, "0") }}:{{ String(minutes).padStart(2, "0") }}:{{ String(seconds).padStart(2, "0") }}
           </vue-countdown>
           <div class="quest-hint" @click="toggleHint">
@@ -17,7 +17,14 @@
         <div v-if="openModal" class="modal-win">
           <div class="modal-win-content">
             <div class="modal-win-tick">✔</div>
-            <div>That's it! Head back to the Science Games room!</div>
+            <div>That's it!</div>
+            <div>Here are your stats:</div>
+            <div>
+              <p>You've figured out {{ stats.points }} clues</p>
+              <p>You used {{ stats.deduction }} hints</p>
+              <p>Your final score is {{ stats.final }}</p>
+            </div>
+            <div>Head back to the Science Games room!</div>
             <div>
               <button class="modal-btn btn btn-lg" @click="toggleModal">Cool</button>
             </div>
@@ -46,7 +53,8 @@
               <h1>Clue:</h1>
               <p>"{{ quests[state].clue }}"</p>
             </div>
-            <button class="inv btn btn-lg" type="button" @click="onToggle">Investigate</button>
+            <button v-if="!end_game" class="inv btn btn-lg" type="button" @click="onToggle">Investigate</button>
+            <button v-else class="inv btn btn-lg" type="button" @click="toggleModal">Show Stats</button>
             <div class="instru">
               <span>To scan the secret qr-code, tap the "Investigate" button.</span>
             </div>
@@ -83,10 +91,24 @@ export default {
       openHint: false,
       hint_used: false,
       hints_left: 3,
+      stats: {},
+      end_game: false,
       // state: this.quests.filter(q => q.completed).length-1
     };
   },
   watch: {
+    openModal(newValue) {
+      if (newValue) {
+        var points = this.quests.filter((quest) => quest.completed).length;
+        var deduction = 3 - this.hints_left;
+        var final = points - deduction / 2;
+        this.stats = {
+          points,
+          deduction,
+          final,
+        };
+      }
+    },
     toggle(newValue) {
       if (!newValue) {
         var endTime = parseInt(localStorage.getItem("endTime"));
@@ -95,6 +117,12 @@ export default {
     },
   },
   methods: {
+    saveState() {
+      localStorage.setItem("gameState", JSON.stringify(this.$data));
+    },
+    loadState() {
+      this.$data = JSON.parse(localStorage.getItem("gameState"));
+    },
     sortQuests(quests) {
       function func(_a, _b) {
         return 0.5 - Math.random();
@@ -112,15 +140,16 @@ export default {
       var sorted = order.map((i) => quests[i]);
       return sorted;
     },
-    onCountdownEnd() {
-      alert("boop");
-    },
     toggleModal() {
       this.openModal = !this.openModal;
     },
+    onCountdownEnd() {
+      this.end_game = true;
+      this.toggleModal();
+    },
     toggleHint() {
-      if (this.hints_left > 0 || this.openHint == true) this.openHint = !this.openHint;
-      if (!this.hint_used) {
+      if ((this.hints_left > 0 || this.openHint == true) && !this.end_game) this.openHint = !this.openHint;
+      if (!this.hint_used && !this.end_game) {
         this.hints_left = this.hints_left - 1;
         this.hint_used = true;
       }
@@ -134,7 +163,8 @@ export default {
         localStorage.removeItem("game");
         localStorage.removeItem("gameName");
         localStorage.removeItem("state");
-        this.$refs.countdown.end();
+        // this.$refs.countdown.end();
+        this.end_game = true;
         this.toggleModal();
         // await alert("That's it! You are soooo Clutch!");
       }
