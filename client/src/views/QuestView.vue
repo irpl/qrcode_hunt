@@ -86,7 +86,7 @@ export default {
       game: "loading...",
       quests: [],
       state: 0,
-      timeLeft: 10000,
+      timeLeft: 1000000,
       openModal: false,
       openHint: false,
       hint_used: false,
