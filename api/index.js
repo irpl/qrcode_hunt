@@ -36,7 +36,7 @@ app.get("/api/game", (req, res) => {
   Game.findOne({ event: req.query.event })
     .then((g) => {
       console.log("returned game");
-      res.json(g)
+      res.json({msg: "deep"})
     })
     .catch((err) => {
       console.log(err)
