@@ -34,8 +34,14 @@ require("./models/Game");
 // routes
 app.get("/api/game", (req, res) => {
   Game.findOne({ event: req.query.event })
-    .then((g) => res.json(g))
-    .catch((err) => console.log(err));
+    .then((g) => {
+      console.log("returned game");
+      res.json(g)
+    })
+    .catch((err) => {
+      console.log(err)
+      res.json({msg: "error"})
+    });
 });
 
 app.get("/api/games", (req, res) => {
