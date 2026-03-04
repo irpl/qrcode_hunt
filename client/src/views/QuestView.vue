@@ -48,6 +48,10 @@
 
         <div v-if="!openHint">
           <div class="quests" v-if="quests[0]">
+            <div class="clue-card">
+              <div class="clue-label">Current clue</div>
+              <p class="clue-text">"{{ quests[state].clue }}"</p>
+            </div>
             <ol class="quest-list">
               <li v-for="(quest, index) in quests" :key="quest._id"
                   :class="['quest-item', { 'quest-active': index === state && !quest.completed, 'quest-done': quest.completed, 'quest-locked': !quest.completed && index !== state }]">
@@ -55,10 +59,6 @@
                 <span class="quest-title-text">{{ quest.title }}</span>
               </li>
             </ol>
-            <div class="clue-card">
-              <div class="clue-label">Current clue</div>
-              <p class="clue-text">"{{ quests[state].clue }}"</p>
-            </div>
             <button v-if="!end_game" class="btn btn-lg btn-accent inv" type="button" @click="onToggle">
               🔍 Investigate
             </button>
@@ -309,7 +309,11 @@ export default {
 .quest-list {
   list-style: none;
   padding: 0;
-  margin: 0 0 4px;
+  margin: 0 0 16px;
+  max-height: 180px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--surface-3) transparent;
 }
 
 .quest-item {

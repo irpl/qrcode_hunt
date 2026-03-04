@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <header-item />
+    <header-item v-if="$route.name !== 'quest'" />
     <router-view />
   </div>
 </template>
