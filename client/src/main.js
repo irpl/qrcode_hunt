@@ -12,3 +12,9 @@ axios.defaults.baseURL = "https://clutch-irpl.vercel.app";
 // Vue.config.productionTip = false;
 
 createApp(App).use(router).mount("#app");
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js");
+  });
+}
