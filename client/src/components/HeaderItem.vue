@@ -5,6 +5,9 @@
       <router-link to="/make">Make</router-link>
       <router-link to="/games">Games</router-link>
       <router-link to="/about">About</router-link>
+      <button class="theme-toggle" @click="toggleTheme" :title="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
+        {{ isDark ? '☀️' : '🌙' }}
+      </button>
     </nav>
   </header>
 </template>
@@ -12,6 +15,23 @@
 <script>
 export default {
   name: "HeaderItem",
+  data() {
+    return {
+      isDark: localStorage.getItem("theme") !== "light",
+    };
+  },
+  methods: {
+    toggleTheme() {
+      this.isDark = !this.isDark;
+      if (this.isDark) {
+        document.documentElement.classList.remove("light");
+        localStorage.setItem("theme", "dark");
+      } else {
+        document.documentElement.classList.add("light");
+        localStorage.setItem("theme", "light");
+      }
+    },
+  },
 };
 </script>
 
@@ -37,6 +57,7 @@ export default {
 
 .nav {
   display: flex;
+  align-items: center;
   gap: 2px;
 }
 
@@ -52,11 +73,28 @@ export default {
 
 .nav a:hover {
   color: var(--text);
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--nav-hover-bg);
 }
 
 .nav a.router-link-active {
   color: var(--accent);
   background: var(--accent-glow);
+}
+
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 9px;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  margin-left: 4px;
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.theme-toggle:hover {
+  border-color: var(--border-hover);
+  background: var(--nav-hover-bg);
 }
 </style>

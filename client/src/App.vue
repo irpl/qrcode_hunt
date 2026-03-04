@@ -12,6 +12,11 @@ export default {
   components: {
     HeaderItem,
   },
+  created() {
+    if (localStorage.getItem("theme") === "light") {
+      document.documentElement.classList.add("light");
+    }
+  },
 };
 </script>
 
@@ -29,12 +34,32 @@ export default {
   --text: #f4f1ee;
   --text-muted: #9e9892;
   --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.2);
   --border-accent: rgba(240, 151, 58, 0.4);
+  --nav-hover-bg: rgba(255, 255, 255, 0.06);
   --success: #4ade80;
   --error: #f87171;
   --radius: 8px;
   --radius-lg: 16px;
   --transition: 0.18s ease;
+}
+
+html.light {
+  --bg: #f4f1ee;
+  --surface: #ffffff;
+  --surface-2: #edeae6;
+  --surface-3: #e2ddd8;
+  --accent: #d4781c;
+  --accent-dark: #b5640f;
+  --accent-glow: rgba(212, 120, 28, 0.15);
+  --text: #1a1917;
+  --text-muted: #6b6560;
+  --border: rgba(0, 0, 0, 0.1);
+  --border-hover: rgba(0, 0, 0, 0.2);
+  --border-accent: rgba(212, 120, 28, 0.4);
+  --nav-hover-bg: rgba(0, 0, 0, 0.05);
+  --success: #16a34a;
+  --error: #dc2626;
 }
 
 * {
@@ -108,7 +133,7 @@ h2 {
 .btn:hover,
 .btn:focus {
   background-color: var(--surface-3);
-  border-color: rgba(255, 255, 255, 0.18);
+  border-color: var(--border-hover);
   transform: translateY(-1px);
   outline: none;
 }
