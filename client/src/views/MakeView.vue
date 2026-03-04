@@ -2,40 +2,54 @@
   <div class="container">
     <made-item v-if="success" :game="success" />
     <div v-else>
-      <h1>Create your own game</h1>
-      <h2>General</h2>
-      <div class="make-input-div">
-        <input class="make-input" type="text" v-model="event" placeholder="Game name" />
-      </div>
-      <div class="make-input-div">
-        <input class="make-input" type="text" v-model="gameMaker" placeholder="Your name" />
-      </div>
-      <div class="make-input-div">
-        <input class="make-input" type="text" v-model="gameDuration" placeholder="Game duration eg: 1.5h, 30m" />
-      </div>
+      <h1 class="page-title">Create a game</h1>
+
+      <section class="form-section">
+        <h2>General</h2>
+        <div class="field">
+          <input class="field-input" type="text" v-model="event" placeholder="Game name" />
+        </div>
+        <div class="field">
+          <input class="field-input" type="text" v-model="gameMaker" placeholder="Your name" />
+        </div>
+        <div class="field">
+          <input class="field-input" type="text" v-model="gameDuration" placeholder="Duration  e.g. 1.5h, 30m" />
+        </div>
+      </section>
 
       <div v-if="errors.length" class="error-list">
-        <p v-for="(err, i) in errors" :key="i" class="error-msg">{{ err }}</p>
+        <p v-for="(err, i) in errors" :key="i" class="error-msg">⚠ {{ err }}</p>
       </div>
 
       <hr />
-      <h2>Quests</h2>
-      <div v-for="(quest, index) in quests" :key="index">
-        <div class="make-input-div">
-          <input class="make-input" type="text" v-model="quest.title" placeholder="Title" />
+
+      <section class="form-section">
+        <div class="quests-header">
+          <h2>Quests</h2>
+          <button class="btn btn-sm btn-accent" @click="addRow">+ Add quest</button>
         </div>
-        <div class="make-input-div">
-          <textarea class="make-input" v-model="quest.clue" placeholder="Clue" />
+        <div v-for="(quest, index) in quests" :key="index" class="quest-card">
+          <div class="quest-card-header">
+            <span class="quest-number">Quest {{ index + 1 }}</span>
+            <button class="btn btn-sm del-btn" @click="deleteRow(index)">Remove</button>
+          </div>
+          <div class="field">
+            <input class="field-input" type="text" v-model="quest.title" placeholder="Title" />
+          </div>
+          <div class="field">
+            <textarea class="field-input" v-model="quest.clue" placeholder="Clue" rows="3" />
+          </div>
+          <label class="hint-label">
+            <span>Hint image (optional)</span>
+            <input type="file" accept="image/png, image/gif, image/jpeg" @change="onFileSelected($event, index)" />
+          </label>
+          <div v-if="quest.hint" class="hint-preview-label">✔ Image attached</div>
         </div>
-        <div class="make-input-div make-image-select">
-          <div>Hint (optional)</div>
-          <input type="file" accept="image/png, image/gif, image/jpeg" @change="onFileSelected($event, index)" />
-        </div>
-        <button class="btn btn-sm del" @click="deleteRow(index)">- del</button>
-      </div>
-      <button class="btn btn-sm add" @click="addRow"><span>+ </span> add</button>
-      <button class="btn btn-lg" @click="submit" :disabled="submitting">
-        {{ submitting ? "Submitting..." : "Submit" }}
+        <div v-if="quests.length === 0" class="no-quests">No quests yet. Add one above.</div>
+      </section>
+
+      <button class="btn btn-lg btn-accent submit-btn" @click="submit" :disabled="submitting">
+        {{ submitting ? "Submitting..." : "Create game" }}
       </button>
     </div>
   </div>
@@ -142,60 +156,126 @@ export default {
 </script>
 
 <style scoped>
-.btn-sm.del {
-  margin: -6px 6px;
+.page-title {
+  margin-bottom: 20px;
 }
-.btn-sm.add {
-  float: right;
-  margin-bottom: 40px;
+
+.form-section {
+  margin-bottom: 8px;
 }
-.make-input-div {
-  position: relative;
+
+.quests-header {
   display: flex;
-  flex-direction: row;
-  max-width: 300px;
-  margin: 15px auto;
-  border-radius: 2px;
-  padding: 10px 20px;
-  background: #2a2826;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
 }
-.make-image-select {
-  flex-direction: column;
-  gap: 40px;
-  color: #757575;
-  font-size: 18px;
-  font-weight: bold;
+
+.quests-header h2 {
+  margin-bottom: 0;
 }
-.make-input-div input {
-  flex-grow: 1;
+
+.field {
+  margin-bottom: 10px;
+}
+
+.field-input {
   width: 100%;
-  color: white;
-  font-size: 20px;
-  line-height: 2.4rem;
-  vertical-align: middle;
-}
-.make-input-div textarea {
-  color: inherit;
-  width: 100%;
-  font-size: 20px;
-  height: 3em;
-}
-.make-input {
-  border-style: none;
-  background: transparent;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: 'Raleway', sans-serif;
+  font-size: 15px;
+  padding: 12px 14px;
   outline: none;
+  transition: border-color var(--transition);
+  resize: vertical;
 }
+
+.field-input:focus {
+  border-color: var(--accent);
+}
+
+.field-input::placeholder {
+  color: var(--text-muted);
+}
+
+.quest-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.quest-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.quest-number {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.del-btn {
+  opacity: 0.6;
+  font-size: 12px;
+}
+
+.del-btn:hover {
+  opacity: 1;
+  color: var(--error);
+  border-color: var(--error);
+}
+
+.hint-label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+.hint-preview-label {
+  font-size: 0.8rem;
+  color: var(--success);
+  margin-top: 6px;
+}
+
+.no-quests {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 24px;
+  font-size: 0.9rem;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+}
+
 .error-list {
-  max-width: 300px;
-  margin: 0 auto;
+  margin-bottom: 16px;
 }
+
 .error-msg {
-  color: #ff6b6b;
-  font-size: 0.9em;
+  color: var(--error);
+  font-size: 0.88rem;
   margin: 4px 0;
 }
+
+.submit-btn {
+  margin-top: 8px;
+}
+
 button:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
+  transform: none !important;
 }
 </style>

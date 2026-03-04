@@ -1,6 +1,6 @@
 <template>
   <header class="header">
-    <router-link to="/" class="brand"><span>Clutch</span></router-link>
+    <router-link to="/" class="brand">CLUTCH</router-link>
     <nav class="nav">
       <router-link to="/make">Make</router-link>
       <router-link to="/games">Games</router-link>
@@ -20,22 +20,43 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #f7f7f722;
-  color: #fff;
-  padding: 10px;
-  border-radius: 2px;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
 }
-.header a {
-  color: #ccc;
-  padding: 0 10px;
+
+.brand {
+  font-weight: 900;
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+  color: var(--accent) !important;
   text-decoration: none;
 }
-.header a.router-link-active {
-  color: #fff;
-  font-weight: bold;
-}
+
 .nav {
   display: flex;
-  gap: 4px;
+  gap: 2px;
+}
+
+.nav a {
+  color: var(--text-muted);
+  padding: 6px 12px;
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border-radius: 6px;
+  transition: color var(--transition), background-color var(--transition);
+}
+
+.nav a:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.nav a.router-link-active {
+  color: var(--accent);
+  background: var(--accent-glow);
 }
 </style>

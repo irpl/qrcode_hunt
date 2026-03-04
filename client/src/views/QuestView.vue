@@ -9,55 +9,61 @@
           <vue-countdown @end="onCountdownEnd" ref="countdown" tag="div" class="quest-countdown" :time="timeLeft" v-slot="{ hours, minutes, seconds }">
             {{ String(hours).padStart(2, "0") }}:{{ String(minutes).padStart(2, "0") }}:{{ String(seconds).padStart(2, "0") }}
           </vue-countdown>
-          <div class="quest-hint" @click="toggleHint">
-            <div>💡</div>
-            <div>Hints: {{ hints_left }}</div>
-          </div>
+          <button class="hint-btn" @click="toggleHint" :disabled="hints_left === 0 || end_game">
+            <span class="hint-icon">💡</span>
+            <span class="hint-count">{{ hints_left }}</span>
+          </button>
         </div>
-        <div v-if="openModal" class="modal-win">
+
+        <div v-if="openModal" class="modal-overlay">
           <div class="modal-win-content">
             <div class="modal-win-tick">✔</div>
-            <div>That's it!</div>
-            <div>Here are your stats:</div>
-            <div>
-              <p>You've figured out {{ stats.points }} clues</p>
-              <p>You used {{ stats.deduction }} hints</p>
-              <p>Your final score is {{ stats.final }}</p>
+            <h2 class="modal-title">That's it!</h2>
+            <div class="stats-grid">
+              <div class="stat-block">
+                <div class="stat-value">{{ stats.points }}</div>
+                <div class="stat-label">Clues solved</div>
+              </div>
+              <div class="stat-block">
+                <div class="stat-value">{{ stats.deduction }}</div>
+                <div class="stat-label">Hints used</div>
+              </div>
+              <div class="stat-block accent">
+                <div class="stat-value">{{ stats.final }}</div>
+                <div class="stat-label">Final score</div>
+              </div>
             </div>
-            <div>Head back to the Science Games room!</div>
-            <div>
-              <button class="modal-btn btn btn-lg" @click="toggleModal">Cool</button>
-            </div>
+            <p class="modal-footer-msg">Head back to the Science Games room!</p>
+            <button class="btn btn-lg btn-accent" @click="toggleModal">Cool</button>
           </div>
         </div>
-        <div v-if="openHint" class="modal-hint">
+
+        <div v-if="openHint" class="modal-overlay">
           <div class="modal-hint-content">
-            <div>Here's your hint. I hope it was worth it.</div>
-            <img :src="quests[state].hint" alt="Hint image" />
-            <div>
-              <button class="modal-btn btn btn-lg" @click="toggleHint">Close</button>
-            </div>
+            <p class="hint-caption">Here's your hint. I hope it was worth it.</p>
+            <img :src="quests[state].hint" alt="Hint image" class="hint-img" />
+            <button class="btn btn-lg" @click="toggleHint">Close</button>
           </div>
         </div>
 
         <div v-if="!openHint">
-          <h1>Quest list</h1>
           <div class="quests" v-if="quests[0]">
-            <ol>
-              <li v-for="(quest, index) in quests" :key="quest._id" class="quest">
-                <span :class="{ 'not-yet': !quest.completed && index !== state, 'is-completed': quest.completed }">{{ quest.title }}</span>
-                <span :class="{ 'is-completed-marker': quest.completed }"></span>
+            <ol class="quest-list">
+              <li v-for="(quest, index) in quests" :key="quest._id"
+                  :class="['quest-item', { 'quest-active': index === state && !quest.completed, 'quest-done': quest.completed, 'quest-locked': !quest.completed && index !== state }]">
+                <span class="quest-status-dot"></span>
+                <span class="quest-title-text">{{ quest.title }}</span>
               </li>
             </ol>
-            <div class="clue">
-              <h1>Clue:</h1>
-              <p>"{{ quests[state].clue }}"</p>
+            <div class="clue-card">
+              <div class="clue-label">Current clue</div>
+              <p class="clue-text">"{{ quests[state].clue }}"</p>
             </div>
-            <button v-if="!end_game" class="inv btn btn-lg" type="button" @click="onToggle">Investigate</button>
-            <button v-else class="inv btn btn-lg" type="button" @click="toggleModal">Show Stats</button>
-            <div class="instru">
-              <span>To scan the secret qr-code, tap the "Investigate" button.</span>
-            </div>
+            <button v-if="!end_game" class="btn btn-lg btn-accent inv" type="button" @click="onToggle">
+              🔍 Investigate
+            </button>
+            <button v-else class="btn btn-lg" type="button" @click="toggleModal">Show Stats</button>
+            <div class="instru">Tap Investigate to scan the hidden QR code.</div>
           </div>
           <div v-else>
             <div class="no-game">{{ game }}</div>
@@ -244,111 +250,272 @@ export default {
 </script>
 
 <style scoped>
-ol {
-  padding-left: 20px;
+/* Top bar */
+.quest-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
 }
-.modal-win {
+
+.quest-countdown {
+  font-size: 1.4rem;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 14px;
+}
+
+.hint-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 14px;
+  cursor: pointer;
+  color: var(--text);
+  font-family: 'Raleway', sans-serif;
+  transition: border-color var(--transition), opacity var(--transition);
+}
+
+.hint-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.hint-btn:not(:disabled):hover {
+  border-color: var(--accent);
+}
+
+.hint-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.hint-count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+/* Quest list */
+.quest-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 4px;
+}
+
+.quest-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  margin-bottom: 4px;
+  transition: background var(--transition);
+}
+
+.quest-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--surface-3);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.quest-title-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.quest-active {
+  background: rgba(240, 151, 58, 0.08);
+  border: 1px solid var(--border-accent);
+}
+
+.quest-active .quest-status-dot {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+
+.quest-done {
+  opacity: 0.45;
+}
+
+.quest-done .quest-status-dot {
+  background: var(--success);
+  border-color: var(--success);
+}
+
+.quest-done .quest-title-text {
+  text-decoration: line-through;
+}
+
+.quest-locked {
+  opacity: 0.25;
+  user-select: none;
+}
+
+/* Clue */
+.clue-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin: 20px 0 24px;
+}
+
+.clue-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.clue-text {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  font-style: italic;
+  color: var(--text);
+}
+
+.inv {
+  margin-bottom: 12px;
+}
+
+.instru {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  opacity: 0.6;
+  padding-bottom: 8px;
+}
+
+/* Modals */
+.modal-overlay {
   position: fixed;
   z-index: 9;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
-}
-.modal-hint-content {
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
-  flex-direction: column;
-  gap: 20px;
   align-items: center;
-  margin: 15% auto;
-  border-radius: 2px;
-  width: 100%;
+  justify-content: center;
+  padding: 24px;
 }
-.modal-hint-content .modal-btn {
-  background-color: #2a2826;
-}
+
 .modal-win-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: #2a2826;
-  margin: 15% auto;
-  padding: 20px;
-  border: 8px solid #7c7671;
-  border-radius: 2px;
-  width: 80%;
-}
-.modal-hint-content > img {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px 24px;
   width: 100%;
-}
-.modal-win-tick {
-  color: #0f0;
-  font-size: 6rem;
-}
-.modal-btn {
-  width: 100px;
-  height: 50px;
-  margin-top: 20px;
-  background-color: #7c7671;
-}
-.no-game {
-  margin: 100px 50px;
+  max-width: 360px;
   text-align: center;
-  font-size: 24px;
 }
-.quest {
-  padding: 10px 10px;
+
+.modal-win-tick {
+  font-size: 4rem;
+  color: var(--success);
+  line-height: 1;
+  margin-bottom: 8px;
 }
-.quest-countdown {
-  border-radius: 3px;
-  background-color: #2a2826;
-  padding: 5px 10px;
-  width: 70px;
+
+.modal-title {
+  font-size: 1.4rem;
+  font-weight: 900;
+  margin-bottom: 24px;
+  color: var(--text);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.stats-grid {
   display: flex;
   justify-content: center;
+  gap: 16px;
+  margin-bottom: 24px;
 }
-.quest-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+
+.stat-block {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  min-width: 72px;
 }
-.quest-hint {
+
+.stat-block.accent {
+  border-color: var(--border-accent);
+  background: rgba(240, 151, 58, 0.06);
+}
+
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.stat-block.accent .stat-value {
+  color: var(--accent);
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.modal-footer-msg {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.modal-hint-content {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  width: 100%;
+  max-width: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-radius: 3px;
-  background-color: #2a2826;
-  padding: 5px 10px;
+  gap: 16px;
 }
-.not-yet {
-  opacity: 0.5;
-  color: #7c7671;
-  background-color: #7c7671;
-  user-select: none;
+
+.hint-caption {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-align: center;
 }
-.instru {
-  padding: 10px 0;
-  opacity: 0.4;
-  display: flex;
-  justify-content: center;
-}
-.is-completed {
-  text-decoration: line-through;
-}
-.is-completed-marker::after {
-  content: " [COMPLETED] ✔";
-  color: rgb(0, 255, 0);
-}
-.quests button {
+
+.hint-img {
   width: 100%;
-  display: block;
-  margin-bottom: 10px;
-  z-index: 1;
-  position: relative;
-  box-sizing: border-box;
+  border-radius: var(--radius);
 }
-.clue {
-  margin: 50px 0;
+
+.no-game {
+  margin: 80px 24px;
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--text-muted);
 }
 </style>
