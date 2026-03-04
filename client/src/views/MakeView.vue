@@ -1,9 +1,8 @@
 <template>
   <div class="container">
-    <made-item v-if="success" v-bind:game="success" />
+    <made-item v-if="success" :game="success" />
     <div v-else>
       <h1>Create your own game</h1>
-      <!-- <form> -->
       <h2>General</h2>
       <div class="make-input-div">
         <input class="make-input" type="text" v-model="event" placeholder="Game name" />
@@ -14,6 +13,11 @@
       <div class="make-input-div">
         <input class="make-input" type="text" v-model="gameDuration" placeholder="Game duration eg: 1.5h, 30m" />
       </div>
+
+      <div v-if="errors.length" class="error-list">
+        <p v-for="(err, i) in errors" :key="i" class="error-msg">{{ err }}</p>
+      </div>
+
       <hr />
       <h2>Quests</h2>
       <div v-for="(quest, index) in quests" :key="index">
@@ -30,8 +34,9 @@
         <button class="btn btn-sm del" @click="deleteRow(index)">- del</button>
       </div>
       <button class="btn btn-sm add" @click="addRow"><span>+ </span> add</button>
-      <button class="btn btn-lg" @click="submit">Submit</button>
-      <!-- </form> -->
+      <button class="btn btn-lg" @click="submit" :disabled="submitting">
+        {{ submitting ? "Submitting..." : "Submit" }}
+      </button>
     </div>
   </div>
 </template>
@@ -52,21 +57,21 @@ export default {
       event: "",
       gameDuration: "",
       success: false,
+      errors: [],
+      submitting: false,
     };
   },
   methods: {
     blobToBase64(blob) {
-      return new Promise((resolve, _) => {
+      return new Promise((resolve) => {
         const reader = new FileReader();
         reader.onloadend = () => resolve(reader.result);
         reader.readAsDataURL(blob);
       });
     },
     async onFileSelected(e, index) {
-      console.log(index);
       const imageFile = e.target.files[0];
-      console.log("originalFile instanceof Blob", imageFile instanceof Blob); // true
-      console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
+      if (!imageFile) return;
 
       const options = {
         maxSizeMB: 0.5,
@@ -76,53 +81,60 @@ export default {
 
       try {
         const compressedFile = await imageCompression(imageFile, options);
-        console.log("compressedFile instanceof Blob", compressedFile instanceof Blob); // true
-        console.log(`compressedFile size ${compressedFile.size / 1024} KB`); // smaller than maxSizeMB
-
-        this.quests[index].hint = await this.blobToBase64(compressedFile); // write your own logic
-        // this.quests[index].hint = compressedFile; // write your own logic
-        // console.log(compressedFile);
+        this.quests[index].hint = await this.blobToBase64(compressedFile);
       } catch (error) {
-        console.log(error);
+        console.error("Image compression failed:", error);
       }
     },
     addRow(e) {
       e.preventDefault();
-
-      this.quests.push({
-        title: "",
-        clue: "",
-        hint: "",
-      });
+      this.quests.push({ title: "", clue: "", hint: "" });
     },
     deleteRow(index) {
-      // e.preventDefault();
       this.quests.splice(index, 1);
     },
+    validate() {
+      const errs = [];
+      if (!this.event.trim()) errs.push("Game name is required.");
+      if (!this.gameMaker.trim()) errs.push("Your name is required.");
+      if (!this.gameDuration.trim()) errs.push("Game duration is required.");
+      if (this.quests.length === 0) errs.push("Add at least one quest.");
+      this.quests.forEach((quest, i) => {
+        if (!quest.title.trim()) errs.push(`Quest ${i + 1} is missing a title.`);
+        if (!quest.clue.trim()) errs.push(`Quest ${i + 1} is missing a clue.`);
+      });
+      return errs;
+    },
     submit() {
+      this.errors = this.validate();
+      if (this.errors.length) return;
+
+      this.submitting = true;
       const formData = new FormData();
       formData.append("gameMaker", this.gameMaker);
       formData.append("event", this.event);
       formData.append("gameDuration", this.gameDuration);
-      formData.append("success", this.success);
 
       this.quests.forEach((quest) => {
-        formData.append(`quests[]`, JSON.stringify(quest));
+        formData.append("quests[]", JSON.stringify(quest));
       });
-      // console.log(formData.get("gameMaker"));
-      // console.log(formData.getAll("quests[]"));
+
       axios
         .post("/api/game", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data" },
         })
         .then((res) => {
           if (res.data.success) {
             this.success = res.data.success;
           } else {
-            alert("There was an error");
+            this.errors = ["Game creation failed. Please try again."];
           }
+        })
+        .catch(() => {
+          this.errors = ["Network error. Please check your connection and try again."];
+        })
+        .finally(() => {
+          this.submitting = false;
         });
     },
   },
@@ -141,7 +153,6 @@ export default {
   position: relative;
   display: flex;
   flex-direction: row;
-  /* width: 100%; */
   max-width: 300px;
   margin: 15px auto;
   border-radius: 2px;
@@ -149,14 +160,11 @@ export default {
   background: #2a2826;
 }
 .make-image-select {
-  /* height: 100px; */
   flex-direction: column;
   gap: 40px;
   color: #757575;
   font-size: 18px;
   font-weight: bold;
-  /* justify-content: space-between; */
-  /* align-items: center; */
 }
 .make-input-div input {
   flex-grow: 1;
@@ -176,5 +184,18 @@ export default {
   border-style: none;
   background: transparent;
   outline: none;
+}
+.error-list {
+  max-width: 300px;
+  margin: 0 auto;
+}
+.error-msg {
+  color: #ff6b6b;
+  font-size: 0.9em;
+  margin: 4px 0;
+}
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 </style>

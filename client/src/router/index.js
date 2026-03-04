@@ -22,7 +22,7 @@ const routes = [
   },
   {
     path: "/games",
-    name: "game",
+    name: "games",
     component: GamesView,
   },
   {

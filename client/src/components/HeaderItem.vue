@@ -1,10 +1,11 @@
 <template>
   <header class="header">
-    <router-link to="/"><span>Clutch</span></router-link>
-    <div class="nav">
-      <router-link to="/make">Make</router-link> | <router-link to="/games">Games</router-link> |
+    <router-link to="/" class="brand"><span>Clutch</span></router-link>
+    <nav class="nav">
+      <router-link to="/make">Make</router-link>
+      <router-link to="/games">Games</router-link>
       <router-link to="/about">About</router-link>
-    </div>
+    </nav>
   </header>
 </template>
 
@@ -16,11 +17,12 @@ export default {
 
 <style scoped>
 .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   background-color: #f7f7f722;
   color: #fff;
-  /* text-align: center; */
   padding: 10px;
-  /* margin: 0 5.5px; */
   border-radius: 2px;
 }
 .header a {
@@ -28,8 +30,12 @@ export default {
   padding: 0 10px;
   text-decoration: none;
 }
+.header a.router-link-active {
+  color: #fff;
+  font-weight: bold;
+}
 .nav {
-  float: right;
-  /* color: #ccc; */
+  display: flex;
+  gap: 4px;
 }
 </style>
