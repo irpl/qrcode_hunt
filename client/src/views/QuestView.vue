@@ -9,13 +9,10 @@
           <vue-countdown @end="onCountdownEnd" ref="countdown" tag="div" class="quest-countdown" :time="timeLeft" v-slot="{ hours, minutes, seconds }">
             {{ String(hours).padStart(2, "0") }}:{{ String(minutes).padStart(2, "0") }}:{{ String(seconds).padStart(2, "0") }}
           </vue-countdown>
-          <div class="quest-top-actions">
-            <button class="hint-btn" @click="toggleHint" :disabled="hints_left === 0 || end_game">
-              <span class="hint-icon">💡</span>
-              <span class="hint-count">{{ hints_left }}</span>
-            </button>
-            <button class="quit-btn" @click="confirmQuit" title="Quit game">✕</button>
-          </div>
+          <button class="hint-btn" @click="toggleHint" :disabled="hints_left === 0 || end_game">
+            <span class="hint-icon">💡</span>
+            <span class="hint-count">{{ hints_left }}</span>
+          </button>
         </div>
 
         <div v-if="openModal" class="modal-overlay">
@@ -78,6 +75,7 @@
             </button>
             <button v-else class="btn btn-lg" type="button" @click="toggleModal">Show Stats</button>
             <div class="instru">Tap Investigate to scan the hidden QR code.</div>
+            <button v-if="!end_game" class="quit-link" @click="confirmQuit">Quit game</button>
           </div>
           <div v-else>
             <div class="no-game">{{ game }}</div>
@@ -342,27 +340,24 @@ export default {
   border-color: var(--accent);
 }
 
-.quest-top-actions {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.quit-btn {
+.quit-link {
+  display: block;
+  width: 100%;
   background: none;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 8px 12px;
+  border: none;
   cursor: pointer;
   color: var(--text-muted);
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-family: 'Raleway', sans-serif;
-  transition: border-color var(--transition), color var(--transition);
+  text-align: center;
+  padding: 10px 0 4px;
+  opacity: 0.55;
+  transition: color var(--transition), opacity var(--transition);
 }
 
-.quit-btn:hover {
-  border-color: var(--error);
+.quit-link:hover {
   color: var(--error);
+  opacity: 1;
 }
 
 .btn-danger {
