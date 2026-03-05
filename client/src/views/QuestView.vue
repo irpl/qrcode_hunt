@@ -9,10 +9,13 @@
           <vue-countdown @end="onCountdownEnd" ref="countdown" tag="div" class="quest-countdown" :time="timeLeft" v-slot="{ hours, minutes, seconds }">
             {{ String(hours).padStart(2, "0") }}:{{ String(minutes).padStart(2, "0") }}:{{ String(seconds).padStart(2, "0") }}
           </vue-countdown>
-          <button class="hint-btn" @click="toggleHint" :disabled="hints_left === 0 || end_game">
-            <span class="hint-icon">💡</span>
-            <span class="hint-count">{{ hints_left }}</span>
-          </button>
+          <div class="quest-top-actions">
+            <button class="hint-btn" @click="toggleHint" :disabled="hints_left === 0 || end_game">
+              <span class="hint-icon">💡</span>
+              <span class="hint-count">{{ hints_left }}</span>
+            </button>
+            <button class="quit-btn" @click="confirmQuit" title="Quit game">✕</button>
+          </div>
         </div>
 
         <div v-if="openModal" class="modal-overlay">
@@ -34,7 +37,16 @@
               </div>
             </div>
             <p class="modal-footer-msg">Head back to the Science Games room!</p>
-            <button class="btn btn-lg btn-accent" @click="toggleModal">Cool</button>
+            <button class="btn btn-lg btn-accent" @click="goHome">Go Home</button>
+          </div>
+        </div>
+
+        <div v-if="openQuitConfirm" class="modal-overlay">
+          <div class="modal-win-content">
+            <h2 class="modal-title">Quit game?</h2>
+            <p class="modal-footer-msg">Your progress will be lost and you won't be able to resume.</p>
+            <button class="btn btn-lg btn-danger" @click="quitGame">Yes, quit</button>
+            <button class="btn btn-lg" @click="openQuitConfirm = false">Keep playing</button>
           </div>
         </div>
 
@@ -103,6 +115,7 @@ export default {
       hints_left: 3,
       hintImage: null,
       hintLoading: false,
+      openQuitConfirm: false,
       stats: {},
       end_game: false,
     };
@@ -211,6 +224,17 @@ export default {
       this.onToggle();
       this.checkGameState();
     },
+    confirmQuit() {
+      this.openQuitConfirm = true;
+    },
+    quitGame() {
+      window.removeEventListener("beforeunload", this.handleBeforeUnload);
+      Object.values(STORAGE_KEYS).forEach((key) => localStorage.removeItem(key));
+      this.$router.push("/");
+    },
+    goHome() {
+      this.$router.push("/");
+    },
     handleBeforeUnload(e) {
       if (!this.end_game) {
         e.preventDefault();
@@ -316,6 +340,42 @@ export default {
 
 .hint-btn:not(:disabled):hover {
   border-color: var(--accent);
+}
+
+.quest-top-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.quit-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-family: 'Raleway', sans-serif;
+  transition: border-color var(--transition), color var(--transition);
+}
+
+.quit-btn:hover {
+  border-color: var(--error);
+  color: var(--error);
+}
+
+.btn-danger {
+  background-color: var(--error);
+  color: #fff;
+  border-color: var(--error);
+  font-weight: 900;
+}
+
+.btn-danger:hover,
+.btn-danger:focus {
+  filter: brightness(0.88);
+  border-color: var(--error);
 }
 
 .hint-icon {
