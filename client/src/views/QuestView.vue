@@ -41,7 +41,9 @@
         <div v-if="openHint" class="modal-overlay">
           <div class="modal-hint-content">
             <p class="hint-caption">Here's your hint. I hope it was worth it.</p>
-            <img :src="quests[state].hint" alt="Hint image" class="hint-img" />
+            <div v-if="hintLoading" class="hint-loading">Loading hint...</div>
+            <img v-else-if="hintImage" :src="hintImage" alt="Hint image" class="hint-img" />
+            <p v-else class="hint-caption">No hint available for this clue.</p>
             <button class="btn btn-lg" @click="toggleHint">Close</button>
           </div>
         </div>
@@ -91,6 +93,7 @@ export default {
     return {
       toggle: false,
       game: "loading...",
+      gameId: null,
       quests: [],
       state: 0,
       timeLeft: 1000000,
@@ -98,6 +101,8 @@ export default {
       openHint: false,
       hint_used: false,
       hints_left: 3,
+      hintImage: null,
+      hintLoading: false,
       stats: {},
       end_game: false,
     };
@@ -153,13 +158,30 @@ export default {
       this.toggleModal();
     },
     toggleHint() {
-      if ((this.hints_left > 0 || this.openHint) && !this.end_game) {
-        this.openHint = !this.openHint;
+      if (this.openHint) {
+        this.openHint = false;
+        this.hintImage = null;
+        return;
       }
-      if (!this.hint_used && !this.end_game && this.openHint) {
+      if (this.hints_left === 0 || this.end_game) return;
+      this.openHint = true;
+      if (!this.hint_used) {
         this.hints_left = this.hints_left - 1;
         this.hint_used = true;
       }
+      this.hintLoading = true;
+      const questId = this.quests[this.state]._id;
+      axios
+        .get(`/api/game/${this.gameId}/hint/${questId}`)
+        .then((res) => {
+          this.hintImage = res.data.hint;
+        })
+        .catch(() => {
+          this.hintImage = null;
+        })
+        .finally(() => {
+          this.hintLoading = false;
+        });
     },
     onToggle() {
       this.toggle = !this.toggle;
@@ -178,6 +200,7 @@ export default {
         if (quest._id === result && !quest.completed && this.quests.indexOf(quest) === this.state) {
           quest.completed = true;
           this.hint_used = false;
+          this.hintImage = null;
 
           if (this.state < this.quests.length - 1) {
             this.state++;
@@ -200,6 +223,7 @@ export default {
       .get(`/api/game?event=${this.$route.query.event}`)
       .then((res) => {
         if (res.data && res.data._id) {
+          this.gameId = res.data._id;
           this.quests = this.sortQuests(res.data.quests);
 
           localStorage.setItem(STORAGE_KEYS.GAME_ACTIVE, "1");
@@ -514,6 +538,12 @@ export default {
 .hint-img {
   width: 100%;
   border-radius: var(--radius);
+}
+
+.hint-loading {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  padding: 24px 0;
 }
 
 .no-game {
