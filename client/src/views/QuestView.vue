@@ -38,6 +38,15 @@
           </div>
         </div>
 
+        <div v-if="openSaveConfirm" class="modal-overlay">
+          <div class="modal-win-content">
+            <h2 class="modal-title">Save & exit?</h2>
+            <p class="modal-footer-msg">Your progress is saved, but the timer keeps running while you're away.</p>
+            <button class="btn btn-lg btn-accent" @click="exitKeepProgress">Got it, exit</button>
+            <button class="btn btn-lg" @click="openSaveConfirm = false">Keep playing</button>
+          </div>
+        </div>
+
         <div v-if="openQuitConfirm" class="modal-overlay">
           <div class="modal-win-content">
             <h2 class="modal-title">Quit game?</h2>
@@ -76,11 +85,10 @@
             <button v-else class="btn btn-lg" type="button" @click="toggleModal">Show Stats</button>
             <div class="instru">Tap Investigate to scan the hidden QR code.</div>
             <div v-if="!end_game" class="exit-links">
-              <button class="exit-link" @click="exitKeepProgress">Save & exit</button>
+              <button class="exit-link" @click="openSaveConfirm = true">Save & exit</button>
               <span class="exit-sep">·</span>
               <button class="exit-link exit-link-danger" @click="confirmQuit">Quit game</button>
             </div>
-            <p v-if="!end_game" class="exit-note">Timer keeps running if you save & exit.</p>
           </div>
           <div v-else>
             <div class="no-game">{{ game }}</div>
@@ -118,6 +126,7 @@ export default {
       hints_left: 3,
       hintImage: null,
       hintLoading: false,
+      openSaveConfirm: false,
       openQuitConfirm: false,
       stats: {},
       end_game: false,
@@ -385,13 +394,6 @@ export default {
   color: var(--error);
 }
 
-.exit-note {
-  text-align: center;
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  opacity: 0.4;
-  padding-bottom: 4px;
-}
 
 .btn-danger {
   background-color: var(--error);
