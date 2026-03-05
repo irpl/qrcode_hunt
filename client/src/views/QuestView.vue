@@ -75,7 +75,11 @@
             </button>
             <button v-else class="btn btn-lg" type="button" @click="toggleModal">Show Stats</button>
             <div class="instru">Tap Investigate to scan the hidden QR code.</div>
-            <button v-if="!end_game" class="quit-link" @click="confirmQuit">Quit game</button>
+            <div v-if="!end_game" class="exit-links">
+              <button class="exit-link" @click="exitKeepProgress">Save & exit</button>
+              <span class="exit-sep">·</span>
+              <button class="exit-link exit-link-danger" @click="confirmQuit">Quit game</button>
+            </div>
           </div>
           <div v-else>
             <div class="no-game">{{ game }}</div>
@@ -222,6 +226,10 @@ export default {
       this.onToggle();
       this.checkGameState();
     },
+    exitKeepProgress() {
+      window.removeEventListener("beforeunload", this.handleBeforeUnload);
+      this.$router.push("/");
+    },
     confirmQuit() {
       this.openQuitConfirm = true;
     },
@@ -231,6 +239,7 @@ export default {
       this.$router.push("/");
     },
     goHome() {
+      window.removeEventListener("beforeunload", this.handleBeforeUnload);
       this.$router.push("/");
     },
     handleBeforeUnload(e) {
@@ -340,24 +349,39 @@ export default {
   border-color: var(--accent);
 }
 
-.quit-link {
-  display: block;
-  width: 100%;
+.exit-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0 4px;
+}
+
+.exit-sep {
+  color: var(--text-muted);
+  opacity: 0.4;
+  font-size: 0.78rem;
+}
+
+.exit-link {
   background: none;
   border: none;
   cursor: pointer;
   color: var(--text-muted);
   font-size: 0.78rem;
   font-family: 'Raleway', sans-serif;
-  text-align: center;
-  padding: 10px 0 4px;
   opacity: 0.55;
+  padding: 0;
   transition: color var(--transition), opacity var(--transition);
 }
 
-.quit-link:hover {
-  color: var(--error);
+.exit-link:hover {
   opacity: 1;
+  color: var(--text);
+}
+
+.exit-link-danger:hover {
+  color: var(--error);
 }
 
 .btn-danger {
