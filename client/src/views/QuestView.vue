@@ -80,6 +80,7 @@
               <span class="exit-sep">·</span>
               <button class="exit-link exit-link-danger" @click="confirmQuit">Quit game</button>
             </div>
+            <p v-if="!end_game" class="exit-note">Timer keeps running if you save & exit.</p>
           </div>
           <div v-else>
             <div class="no-game">{{ game }}</div>
@@ -382,6 +383,14 @@ export default {
 
 .exit-link-danger:hover {
   color: var(--error);
+}
+
+.exit-note {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  opacity: 0.4;
+  padding-bottom: 4px;
 }
 
 .btn-danger {
