@@ -1,11 +1,9 @@
 <template>
   <div>
-    <p class="error">{{ error }}</p>
-
-    <!-- <p class="decode-result">Last result: <b>{{ result }}</b></p> -->
+    <p v-if="error" class="error" role="alert">{{ error }}</p>
 
     <qrcode-stream @decode="onDecode" @init="onInit" camera="rear">
-      <button class="btn btn-sm back-btn" v-on:click="toggle">Back</button>
+      <button class="btn btn-sm back-btn" @click="toggle">Back</button>
     </qrcode-stream>
   </div>
 </template>
@@ -18,7 +16,6 @@ export default {
   },
   data() {
     return {
-      result: "",
       error: "",
     };
   },
@@ -28,7 +25,6 @@ export default {
       this.$emit("toggle");
     },
     onDecode(result) {
-      this.result = result;
       this.$emit("result", result);
     },
     async onInit(promise) {
@@ -36,17 +32,19 @@ export default {
         await promise;
       } catch (error) {
         if (error.name === "NotAllowedError") {
-          this.error = "ERROR: you need to grant camera access permisson";
+          this.error = "Camera access was denied. Please grant permission in your browser settings.";
         } else if (error.name === "NotFoundError") {
-          this.error = "ERROR: no camera on this device";
+          this.error = "No camera found on this device.";
         } else if (error.name === "NotSupportedError") {
-          this.error = "ERROR: secure context required (HTTPS, localhost)";
+          this.error = "Camera requires a secure connection (HTTPS). Please use HTTPS.";
         } else if (error.name === "NotReadableError") {
-          this.error = "ERROR: is the camera already in use?";
+          this.error = "Camera is already in use by another app.";
         } else if (error.name === "OverconstrainedError") {
-          this.error = "ERROR: installed cameras are not suitable";
+          this.error = "No suitable camera found on this device.";
         } else if (error.name === "StreamApiNotSupportedError") {
-          this.error = "ERROR: Stream API is not supported in this browser";
+          this.error = "Camera streaming is not supported in this browser.";
+        } else {
+          this.error = "An unknown camera error occurred.";
         }
       }
     },

@@ -1,37 +1,56 @@
 <template>
   <div class="container">
-    <made-item v-if="success" v-bind:game="success" />
+    <made-item v-if="success" :game="success" />
     <div v-else>
-      <h1>Create your own game</h1>
-      <!-- <form> -->
-      <h2>General</h2>
-      <div class="make-input-div">
-        <input class="make-input" type="text" v-model="event" placeholder="Game name" />
+      <h1 class="page-title">Create a game</h1>
+
+      <section class="form-section">
+        <h2>General</h2>
+        <div class="field">
+          <input class="field-input" type="text" v-model="event" placeholder="Game name" />
+        </div>
+        <div class="field">
+          <input class="field-input" type="text" v-model="gameMaker" placeholder="Your name" />
+        </div>
+        <div class="field">
+          <input class="field-input" type="text" v-model="gameDuration" placeholder="Duration  e.g. 1.5h, 30m" />
+        </div>
+      </section>
+
+      <div v-if="errors.length" class="error-list">
+        <p v-for="(err, i) in errors" :key="i" class="error-msg">⚠ {{ err }}</p>
       </div>
-      <div class="make-input-div">
-        <input class="make-input" type="text" v-model="gameMaker" placeholder="Your name" />
-      </div>
-      <div class="make-input-div">
-        <input class="make-input" type="text" v-model="gameDuration" placeholder="Game duration eg: 1.5h, 30m" />
-      </div>
+
       <hr />
-      <h2>Quests</h2>
-      <div v-for="(quest, index) in quests" :key="index">
-        <div class="make-input-div">
-          <input class="make-input" type="text" v-model="quest.title" placeholder="Title" />
+
+      <section class="form-section">
+        <div class="quests-header">
+          <h2>Quests</h2>
+          <button class="btn btn-sm btn-accent" @click="addRow">+ Add quest</button>
         </div>
-        <div class="make-input-div">
-          <textarea class="make-input" v-model="quest.clue" placeholder="Clue" />
+        <div v-for="(quest, index) in quests" :key="index" class="quest-card">
+          <div class="quest-card-header">
+            <span class="quest-number">Quest {{ index + 1 }}</span>
+            <button class="btn btn-sm del-btn" @click="deleteRow(index)">Remove</button>
+          </div>
+          <div class="field">
+            <input class="field-input" type="text" v-model="quest.title" placeholder="Title" />
+          </div>
+          <div class="field">
+            <textarea class="field-input" v-model="quest.clue" placeholder="Clue" rows="3" />
+          </div>
+          <label class="hint-label">
+            <span>Hint image (optional)</span>
+            <input type="file" accept="image/png, image/gif, image/jpeg" @change="onFileSelected($event, index)" />
+          </label>
+          <div v-if="quest.hint" class="hint-preview-label">✔ Image attached</div>
         </div>
-        <div class="make-input-div make-image-select">
-          <div>Hint (optional)</div>
-          <input type="file" accept="image/png, image/gif, image/jpeg" @change="onFileSelected($event, index)" />
-        </div>
-        <button class="btn btn-sm del" @click="deleteRow(index)">- del</button>
-      </div>
-      <button class="btn btn-sm add" @click="addRow"><span>+ </span> add</button>
-      <button class="btn btn-lg" @click="submit">Submit</button>
-      <!-- </form> -->
+        <div v-if="quests.length === 0" class="no-quests">No quests yet. Add one above.</div>
+      </section>
+
+      <button class="btn btn-lg btn-accent submit-btn" @click="submit" :disabled="submitting">
+        {{ submitting ? "Submitting..." : "Create game" }}
+      </button>
     </div>
   </div>
 </template>
@@ -52,21 +71,21 @@ export default {
       event: "",
       gameDuration: "",
       success: false,
+      errors: [],
+      submitting: false,
     };
   },
   methods: {
     blobToBase64(blob) {
-      return new Promise((resolve, _) => {
+      return new Promise((resolve) => {
         const reader = new FileReader();
         reader.onloadend = () => resolve(reader.result);
         reader.readAsDataURL(blob);
       });
     },
     async onFileSelected(e, index) {
-      console.log(index);
       const imageFile = e.target.files[0];
-      console.log("originalFile instanceof Blob", imageFile instanceof Blob); // true
-      console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
+      if (!imageFile) return;
 
       const options = {
         maxSizeMB: 0.5,
@@ -76,53 +95,60 @@ export default {
 
       try {
         const compressedFile = await imageCompression(imageFile, options);
-        console.log("compressedFile instanceof Blob", compressedFile instanceof Blob); // true
-        console.log(`compressedFile size ${compressedFile.size / 1024} KB`); // smaller than maxSizeMB
-
-        this.quests[index].hint = await this.blobToBase64(compressedFile); // write your own logic
-        // this.quests[index].hint = compressedFile; // write your own logic
-        // console.log(compressedFile);
+        this.quests[index].hint = await this.blobToBase64(compressedFile);
       } catch (error) {
-        console.log(error);
+        console.error("Image compression failed:", error);
       }
     },
     addRow(e) {
       e.preventDefault();
-
-      this.quests.push({
-        title: "",
-        clue: "",
-        hint: "",
-      });
+      this.quests.push({ title: "", clue: "", hint: "" });
     },
     deleteRow(index) {
-      // e.preventDefault();
       this.quests.splice(index, 1);
     },
+    validate() {
+      const errs = [];
+      if (!this.event.trim()) errs.push("Game name is required.");
+      if (!this.gameMaker.trim()) errs.push("Your name is required.");
+      if (!this.gameDuration.trim()) errs.push("Game duration is required.");
+      if (this.quests.length === 0) errs.push("Add at least one quest.");
+      this.quests.forEach((quest, i) => {
+        if (!quest.title.trim()) errs.push(`Quest ${i + 1} is missing a title.`);
+        if (!quest.clue.trim()) errs.push(`Quest ${i + 1} is missing a clue.`);
+      });
+      return errs;
+    },
     submit() {
+      this.errors = this.validate();
+      if (this.errors.length) return;
+
+      this.submitting = true;
       const formData = new FormData();
       formData.append("gameMaker", this.gameMaker);
       formData.append("event", this.event);
       formData.append("gameDuration", this.gameDuration);
-      formData.append("success", this.success);
 
       this.quests.forEach((quest) => {
-        formData.append(`quests[]`, JSON.stringify(quest));
+        formData.append("quests[]", JSON.stringify(quest));
       });
-      // console.log(formData.get("gameMaker"));
-      // console.log(formData.getAll("quests[]"));
+
       axios
         .post("/api/game", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data" },
         })
         .then((res) => {
           if (res.data.success) {
             this.success = res.data.success;
           } else {
-            alert("There was an error");
+            this.errors = ["Game creation failed. Please try again."];
           }
+        })
+        .catch(() => {
+          this.errors = ["Network error. Please check your connection and try again."];
+        })
+        .finally(() => {
+          this.submitting = false;
         });
     },
   },
@@ -130,51 +156,126 @@ export default {
 </script>
 
 <style scoped>
-.btn-sm.del {
-  margin: -6px 6px;
+.page-title {
+  margin-bottom: 20px;
 }
-.btn-sm.add {
-  float: right;
-  margin-bottom: 40px;
+
+.form-section {
+  margin-bottom: 8px;
 }
-.make-input-div {
-  position: relative;
+
+.quests-header {
   display: flex;
-  flex-direction: row;
-  /* width: 100%; */
-  max-width: 300px;
-  margin: 15px auto;
-  border-radius: 2px;
-  padding: 10px 20px;
-  background: #2a2826;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
 }
-.make-image-select {
-  /* height: 100px; */
-  flex-direction: column;
-  gap: 40px;
-  color: #757575;
-  font-size: 18px;
-  font-weight: bold;
-  /* justify-content: space-between; */
-  /* align-items: center; */
+
+.quests-header h2 {
+  margin-bottom: 0;
 }
-.make-input-div input {
-  flex-grow: 1;
+
+.field {
+  margin-bottom: 10px;
+}
+
+.field-input {
   width: 100%;
-  color: white;
-  font-size: 20px;
-  line-height: 2.4rem;
-  vertical-align: middle;
-}
-.make-input-div textarea {
-  color: inherit;
-  width: 100%;
-  font-size: 20px;
-  height: 3em;
-}
-.make-input {
-  border-style: none;
-  background: transparent;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: 'Raleway', sans-serif;
+  font-size: 15px;
+  padding: 12px 14px;
   outline: none;
+  transition: border-color var(--transition);
+  resize: vertical;
+}
+
+.field-input:focus {
+  border-color: var(--accent);
+}
+
+.field-input::placeholder {
+  color: var(--text-muted);
+}
+
+.quest-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.quest-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.quest-number {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.del-btn {
+  opacity: 0.6;
+  font-size: 12px;
+}
+
+.del-btn:hover {
+  opacity: 1;
+  color: var(--error);
+  border-color: var(--error);
+}
+
+.hint-label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+.hint-preview-label {
+  font-size: 0.8rem;
+  color: var(--success);
+  margin-top: 6px;
+}
+
+.no-quests {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 24px;
+  font-size: 0.9rem;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+}
+
+.error-list {
+  margin-bottom: 16px;
+}
+
+.error-msg {
+  color: var(--error);
+  font-size: 0.88rem;
+  margin: 4px 0;
+}
+
+.submit-btn {
+  margin-top: 8px;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
 }
 </style>

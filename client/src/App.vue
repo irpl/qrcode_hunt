@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <header-item />
+    <header-item v-if="$route.name !== 'quest'" />
     <router-view />
   </div>
 </template>
@@ -12,92 +12,167 @@ export default {
   components: {
     HeaderItem,
   },
+  created() {
+    if (localStorage.getItem("theme") === "light") {
+      document.documentElement.classList.add("light");
+    }
+  },
 };
 </script>
 
 <style>
-body {
-  margin: 10px;
-  color: white;
-  background-color: #2a2826;
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;900&display=swap');
+
+:root {
+  --bg: #0f0e0d;
+  --surface: #1c1a18;
+  --surface-2: #2a2826;
+  --surface-3: #353230;
+  --accent: #f0973a;
+  --accent-dark: #d4781c;
+  --accent-glow: rgba(240, 151, 58, 0.2);
+  --text: #f4f1ee;
+  --text-muted: #9e9892;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.2);
+  --border-accent: rgba(240, 151, 58, 0.4);
+  --nav-hover-bg: rgba(255, 255, 255, 0.06);
+  --success: #4ade80;
+  --error: #f87171;
+  --radius: 8px;
+  --radius-lg: 16px;
+  --transition: 0.18s ease;
 }
-hr {
-  display: block;
-  height: 1px;
-  border: 0;
-  border-top: 1px solid #f7f7f722;
-  margin: 1em 0;
+
+html.light {
+  --bg: #f4f1ee;
+  --surface: #ffffff;
+  --surface-2: #edeae6;
+  --surface-3: #e2ddd8;
+  --accent: #d4781c;
+  --accent-dark: #b5640f;
+  --accent-glow: rgba(212, 120, 28, 0.15);
+  --text: #1a1917;
+  --text-muted: #6b6560;
+  --border: rgba(0, 0, 0, 0.1);
+  --border-hover: rgba(0, 0, 0, 0.2);
+  --border-accent: rgba(212, 120, 28, 0.4);
+  --nav-hover-bg: rgba(0, 0, 0, 0.05);
+  --success: #16a34a;
+  --error: #dc2626;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
   padding: 0;
 }
+
+body {
+  padding: 12px;
+  color: var(--text);
+  background-color: var(--bg);
+  min-height: 100vh;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.5em 0;
+}
+
+h1 {
+  font-size: 1.75rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+
+h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  margin-bottom: 12px;
+}
+
 #app {
-  /* font-family: 'Avenir', Helvetica, Arial, sans-serif; */
-  font-family: Raleway;
+  font-family: 'Raleway', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  max-width: 520px;
+  margin: 0 auto;
+}
 
-  color: white;
-  /* margin-top: 60px; */
-}
 .container {
+  padding: 28px 24px;
+  border-radius: var(--radius-lg);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
   position: relative;
-  margin: 10px auto;
-  padding: 24px 44px;
-  border-radius: 2px;
-  /* padding-bottom: 50px; */
-  background-color: #f7f7f722;
-  max-width: 480px;
 }
+
+/* Buttons */
 .btn {
-  color: inherit;
-  height: 72px;
-  -moz-user-select: none;
-  -webkit-user-select: none;
+  color: var(--text);
+  height: 52px;
   user-select: none;
-  cursor: default;
-  background-color: #2a2826;
-  padding: 0px;
-  font-family: Raleway;
+  cursor: pointer;
+  background-color: var(--surface-2);
+  padding: 0 20px;
+  font-family: 'Raleway', sans-serif;
   font-weight: 700;
-  font-size: 20px;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  border: none;
-  -o-transition: all 0.218s;
-  -moz-transition: all 0.218s;
-  -webkit-transition: all 0.218s;
-  transition: all 0.218s;
+  font-size: 15px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  transition: background-color var(--transition), border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+  letter-spacing: 0.03em;
 }
+
+.btn:hover,
+.btn:focus {
+  background-color: var(--surface-3);
+  border-color: var(--border-hover);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-accent {
+  background-color: var(--accent);
+  color: #0f0e0d;
+  border-color: var(--accent);
+  font-weight: 900;
+}
+
+.btn-accent:hover,
+.btn-accent:focus {
+  background-color: var(--accent-dark);
+  border-color: var(--accent-dark);
+  box-shadow: 0 4px 16px var(--accent-glow);
+  transform: translateY(-1px);
+}
+
 .btn-lg {
   width: 100%;
   display: block;
   margin-bottom: 10px;
-  z-index: 1;
-  position: relative;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
 }
+
 .back-btn {
   position: absolute;
   z-index: 1;
-}
-.btn-sm {
-  opacity: 0.7;
-  margin: 10px;
-  height: 41px;
-  width: 70px;
-}
-.btn:hover,
-.btn:active,
-.btn:focus {
-  background-color: #7c7671;
-  cursor: pointer;
+  top: 16px;
+  right: 16px;
 }
 
-/* h1 { font-family: Raleway; font-size: 36px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 26.4px; } 
-h3 { font-family: Raleway; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 15.4px; } 
-p { font-family: Raleway; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 20px; } 
-blockquote { font-family: Raleway; font-size: 21px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 30px; } 
-pre { font-family: Raleway; font-size: 13px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 18.5714px; } */
+.btn-sm {
+  height: 36px;
+  font-size: 13px;
+  padding: 0 14px;
+}
 </style>
