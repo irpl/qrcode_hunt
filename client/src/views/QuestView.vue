@@ -102,7 +102,7 @@
 <script>
 import BarcodeItem from "../components/BarcodeItem.vue";
 import axios from "axios";
-import parse from "parse-duration";
+import parseDuration from "parse-duration";
 import VueCountdown from "@chenfengyuan/vue-countdown";
 import { STORAGE_KEYS } from "../constants/storage";
 
@@ -275,7 +275,7 @@ export default {
           let endTimeStr = localStorage.getItem(STORAGE_KEYS.END_TIME);
           let endTime;
           if (!endTimeStr) {
-            endTime = startTime + parse(res.data.duration);
+            endTime = startTime + parseDuration(res.data.duration);
             localStorage.setItem(STORAGE_KEYS.END_TIME, endTime);
           } else {
             endTime = parseInt(endTimeStr);

@@ -2,13 +2,20 @@
   "name": "clutch",
   "version": 2,
   "builds": [
-    { "src": "client/package.json", "use": "@vercel/static-build" },
+    {
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
+    },
     { "src": "api/index.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "^/api/game[s]?", "dest": "api/index.js" },
+    { "src": "^/api/game[s]?(.*)$", "dest": "api/index.js" },
+    { "src": "^/assets/(.+)", "dest": "/client/assets/$1" },
     { "src": "^/favicon.ico", "dest": "/client/favicon.ico" },
-    { "src": "^/(css|js)/(.+)", "dest": "/client/$1/$2" },
+    { "src": "^/manifest.json", "dest": "/client/manifest.json" },
+    { "src": "^/sw.js", "dest": "/client/sw.js" },
+    { "src": "^/icon.svg", "dest": "/client/icon.svg" },
     { "src": "^/.*", "dest": "/client/index.html" }
   ]
 }

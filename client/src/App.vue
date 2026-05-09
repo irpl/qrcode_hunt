@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import HeaderItem from "./components/HeaderItem";
+import HeaderItem from "./components/HeaderItem.vue";
 export default {
   name: "app",
   components: {
